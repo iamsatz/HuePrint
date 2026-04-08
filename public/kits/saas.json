@@ -1,0 +1,45 @@
+{
+  "id": "saas-clarity",
+  "name": "SaaS Clarity",
+  "industry": "SaaS",
+  "description": "Clean, professional palette for B2B SaaS products. Communicates trust, efficiency, and scalability.",
+  "colors": {
+    "light": {
+      "primary": "#4F46E5",
+      "secondary": "#7C3AED",
+      "background": "#F9FAFB",
+      "surface": "#FFFFFF",
+      "text": "#111827",
+      "border": "#E5E7EB"
+    },
+    "dark": {
+      "primary": "#818CF8",
+      "secondary": "#A78BFA",
+      "background": "#0F172A",
+      "surface": "#1E293B",
+      "text": "#F1F5F9",
+      "border": "#334155"
+    }
+  },
+  "typography": {
+    "headingFont": "Inter",
+    "bodyFont": "Inter",
+    "baseFontSize": "16px",
+    "lineHeight": "1.6"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 2
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px rgba(0,0,0,0.05)",
+    "md": "0 4px 6px rgba(0,0,0,0.07)",
+    "lg": "0 10px 15px rgba(0,0,0,0.10)"
+  }
+}

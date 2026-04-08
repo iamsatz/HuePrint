@@ -1,0 +1,45 @@
+{
+  "id": "health-calm",
+  "name": "Health Calm",
+  "industry": "Health",
+  "description": "Calming, approachable palette for healthcare, wellness, and medical applications.",
+  "colors": {
+    "light": {
+      "primary": "#0EA5E9",
+      "secondary": "#10B981",
+      "background": "#F0F9FF",
+      "surface": "#FFFFFF",
+      "text": "#0C4A6E",
+      "border": "#BAE6FD"
+    },
+    "dark": {
+      "primary": "#38BDF8",
+      "secondary": "#34D399",
+      "background": "#0C1A27",
+      "surface": "#0F2D42",
+      "text": "#E0F2FE",
+      "border": "#164E63"
+    }
+  },
+  "typography": {
+    "headingFont": "Nunito",
+    "bodyFont": "Nunito Sans",
+    "baseFontSize": "16px",
+    "lineHeight": "1.65"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 2
+  },
+  "borderRadius": {
+    "sm": "6px",
+    "md": "12px",
+    "lg": "20px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px rgba(14,165,233,0.06)",
+    "md": "0 4px 12px rgba(14,165,233,0.10)",
+    "lg": "0 10px 30px rgba(14,165,233,0.15)"
+  }
+}

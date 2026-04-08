@@ -1,0 +1,45 @@
+{
+  "id": "finance-prestige",
+  "name": "Finance Prestige",
+  "industry": "Finance",
+  "description": "Authoritative and trustworthy design for financial services, banking, and fintech products.",
+  "colors": {
+    "light": {
+      "primary": "#0F4C81",
+      "secondary": "#1D7A8A",
+      "background": "#F8F9FB",
+      "surface": "#FFFFFF",
+      "text": "#0D1B2A",
+      "border": "#D1D9E0"
+    },
+    "dark": {
+      "primary": "#60A5FA",
+      "secondary": "#34D399",
+      "background": "#0A0F1E",
+      "surface": "#111827",
+      "text": "#E2E8F0",
+      "border": "#1E3A5F"
+    }
+  },
+  "typography": {
+    "headingFont": "Merriweather",
+    "bodyFont": "Source Sans Pro",
+    "baseFontSize": "16px",
+    "lineHeight": "1.7"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 2
+  },
+  "borderRadius": {
+    "sm": "2px",
+    "md": "4px",
+    "lg": "8px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 3px rgba(0,0,0,0.08)",
+    "md": "0 4px 8px rgba(0,0,0,0.10)",
+    "lg": "0 12px 24px rgba(0,0,0,0.12)"
+  }
+}
