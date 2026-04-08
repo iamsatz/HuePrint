@@ -1,0 +1,53 @@
+{
+  "id": "figma-ui3",
+  "name": "Figma UI 3",
+  "industry": "Design Tools",
+  "description": "Figma's own UI 3 design system palette — the colors, typography, and density used in Figma's product interface. Instantly recognizable to designers and developers.",
+  "palette": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#F5F5F5",
+      "primary": "#0D99FF",
+      "secondary": "#9747FF",
+      "accent": "#0D99FF",
+      "text": "#1E1E1E",
+      "textMuted": "#666666",
+      "border": "#E6E6E6",
+      "success": "#14AE5C",
+      "warning": "#FFA629"
+    },
+    "dark": {
+      "background": "#1E1E1E",
+      "surface": "#2C2C2C",
+      "primary": "#0D99FF",
+      "secondary": "#9747FF",
+      "accent": "#0D99FF",
+      "text": "#FFFFFF",
+      "textMuted": "#ABABAB",
+      "border": "#3C3C3C",
+      "success": "#14AE5C",
+      "warning": "#FFA629"
+    }
+  },
+  "typography": {
+    "headingFont": "Inter",
+    "bodyFont": "Inter",
+    "baseFontSize": "12px",
+    "lineHeight": "1.5"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "2px",
+    "md": "6px",
+    "lg": "10px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px rgba(0,0,0,0.1)",
+    "md": "0 2px 8px rgba(0,0,0,0.12)",
+    "lg": "0 8px 24px rgba(0,0,0,0.15)"
+  }
+}
