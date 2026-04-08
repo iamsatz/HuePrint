@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ColorPalette from '../components/kit/ColorPalette'
 import ComponentGallery from '../components/kit/ComponentGallery'
@@ -7,18 +7,63 @@ import ExportPanel from '../components/kit-detail/ExportPanel'
 import { useCustomKit } from '../context/CustomKitContext'
 import './KitDetailPage.css'
 
-function ColorInput({ label, hex }) {
-  const display = hex ? hex.replace('#', '').toUpperCase() : ''
+function ColorInput({ label, hex, onChange }) {
+  const pickerRef = useRef(null)
+  const [inputVal, setInputVal] = useState(hex ? hex.replace('#', '').toUpperCase() : '')
+
+  useEffect(() => {
+    setInputVal(hex ? hex.replace('#', '').toUpperCase() : '')
+  }, [hex])
+
+  function handleSwatchClick() {
+    pickerRef.current?.click()
+  }
+
+  function handlePickerChange(e) {
+    const val = e.target.value
+    onChange(val)
+  }
+
+  function handleHexChange(e) {
+    const raw = e.target.value.replace(/[^0-9a-fA-F]/g, '').slice(0, 6)
+    setInputVal(raw.toUpperCase())
+    if (raw.length === 6) {
+      onChange('#' + raw)
+    } else if (raw.length === 3) {
+      const full = raw.split('').map(c => c + c).join('')
+      onChange('#' + full)
+    }
+  }
+
   return (
     <div className="kd-color-input-group">
       <span className="kd-color-input-label">{label}</span>
-      <div className="kd-color-field">
-        <div className="kd-color-swatch" style={{ background: hex || '#ccc' }} />
+      <div className="kd-color-field kd-color-field--editable">
+        <div
+          className="kd-color-swatch kd-color-swatch--clickable"
+          style={{ background: hex || '#ccc' }}
+          onClick={handleSwatchClick}
+          role="button"
+          aria-label={`Pick color for ${label}`}
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && handleSwatchClick()}
+        />
+        <input
+          ref={pickerRef}
+          type="color"
+          value={hex || '#cccccc'}
+          onChange={handlePickerChange}
+          className="kd-color-picker-input"
+          tabIndex={-1}
+          aria-hidden="true"
+        />
         <input
           className="kd-color-hex"
-          value={display}
-          readOnly
+          value={inputVal}
+          onChange={handleHexChange}
           spellCheck={false}
+          maxLength={6}
+          aria-label={`${label} hex value`}
         />
       </div>
     </div>
@@ -101,6 +146,7 @@ export default function KitDetailPage() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [mode, setMode] = useState('light')
+  const [overrides, setOverrides] = useState({ light: {}, dark: {} })
 
   const isCustom = id === 'custom'
 
@@ -111,6 +157,7 @@ export default function KitDetailPage() {
     }
     setLoading(true)
     setNotFound(false)
+    setOverrides({ light: {}, dark: {} })
     fetch(`/kits/${id}.json`)
       .then((res) => {
         if (!res.ok) throw new Error('not found')
@@ -125,6 +172,20 @@ export default function KitDetailPage() {
         setLoading(false)
       })
   }, [id, isCustom])
+
+  const modeOverrides = overrides[mode] || {}
+  const hasOverrides = Object.keys(modeOverrides).length > 0
+
+  function handleColorChange(role, value) {
+    setOverrides((prev) => ({
+      ...prev,
+      [mode]: { ...prev[mode], [role]: value },
+    }))
+  }
+
+  function handleReset() {
+    setOverrides((prev) => ({ ...prev, [mode]: {} }))
+  }
 
   if (isCustom) {
     return (
@@ -179,14 +240,24 @@ export default function KitDetailPage() {
     )
   }
 
-  const palette = kit.palette?.[mode] || {}
+  const basePalette = kit.palette?.[mode] || {}
+  const effectivePalette = { ...basePalette, ...modeOverrides }
+
+  const mergedKit = {
+    ...kit,
+    palette: {
+      ...kit.palette,
+      [mode]: effectivePalette,
+    },
+  }
+
+  const colorKeys = ['primary', 'secondary', 'accent', 'background', 'surface']
 
   return (
     <div className="kd-page">
       <div className="kd-inner">
         <Link to="/browse" className="kd-back">← Browse kits</Link>
 
-        {/* Centered header */}
         <div className="kd-hero">
           <div className="kd-hero-text">
             <div className="kd-industry-badge">{kit.industry}</div>
@@ -223,39 +294,43 @@ export default function KitDetailPage() {
           </div>
         </div>
 
-        {/* Color swatch inputs — like Radix Colors */}
         <div className="kd-color-inputs">
-          <ColorInput label="Primary" hex={palette.primary} />
-          <ColorInput label="Secondary" hex={palette.secondary} />
-          <ColorInput label="Accent" hex={palette.accent} />
-          <ColorInput label="Background" hex={palette.background} />
-          <ColorInput label="Surface" hex={palette.surface} />
+          {colorKeys.map((role) => (
+            <ColorInput
+              key={role}
+              label={role.charAt(0).toUpperCase() + role.slice(1)}
+              hex={effectivePalette[role]}
+              onChange={(val) => handleColorChange(role, val)}
+            />
+          ))}
+          {hasOverrides && (
+            <button className="kd-reset-btn" onClick={handleReset} aria-label="Reset colors to original">
+              Reset to original
+            </button>
+          )}
         </div>
 
-        {/* 12-step color scales */}
         <section className="kd-section">
-          <ColorPalette kit={kit} mode={mode} />
+          <ColorPalette kit={mergedKit} mode={mode} />
         </section>
 
-        {/* Component gallery */}
         <section className="kd-section">
           <div className="kd-section-header">
             <h2 className="kd-section-title">Component Preview</h2>
             <p className="kd-section-desc">Live UI components rendered with this kit's tokens. Toggle light/dark to see both modes.</p>
           </div>
-          <ComponentGallery kit={kit} mode={mode} />
+          <ComponentGallery kit={mergedKit} mode={mode} />
         </section>
 
-        {/* Token table */}
         <section className="kd-section">
           <div className="kd-section-header">
             <h2 className="kd-section-title">Design Tokens</h2>
             <p className="kd-section-desc">Raw token values for typography, spacing, border radius, and shadows.</p>
           </div>
-          <TokenTable kit={kit} />
+          <TokenTable kit={mergedKit} />
         </section>
 
-        <ExportPanel kit={kit} />
+        <ExportPanel kit={mergedKit} />
       </div>
     </div>
   )
