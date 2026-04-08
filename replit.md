@@ -5,6 +5,7 @@ HuePrint is a React + Vite web application for browsing and exporting design tok
 
 ## Tech Stack
 - **Frontend**: React 18, Vite 5
+- **Backend**: Express (lightweight API server serving Vite as middleware)
 - **Routing**: react-router-dom
 - **Language**: JavaScript (JSX)
 - **Styling**: Tailwind CSS v4 (via `@tailwindcss/vite` plugin)
@@ -26,6 +27,7 @@ HuePrint is a React + Vite web application for browsing and exporting design tok
 │   │   └── kit.ts           # Kit TypeScript type definitions
 │   ├── lib/
 │   │   ├── loadKits.js      # loadKits() + getSwatchColors() utilities
+│   │   ├── brandGuidelines.js  # Brand name → guidelines URL lookup table (~25 brands)
 │   │   └── useKitTheme.js   # useKitTheme(kit, mode) hook — injects CSS vars onto a scoped ref
 │   ├── components/
 │   │   ├── nav/
@@ -47,9 +49,10 @@ HuePrint is a React + Vite web application for browsing and exporting design tok
 │       ├── KitDetailPage.jsx  # /kit/:id route - full kit detail with color panel, gallery, token table
 │       └── KitDetailPage.css
 ├── attached_assets/         # Design assets and metadata
+├── server.js                # Express server — serves Vite as middleware + /api/extract-url endpoint
 ├── PRD.md                   # Product requirements document
 ├── index.html               # HTML entry point
-├── vite.config.js           # Vite config (port 5000, @assets alias, Tailwind)
+├── vite.config.ts           # Vite config (port 5000, @assets alias, Tailwind)
 ├── tsconfig.json            # TypeScript config
 └── package.json             # Dependencies and scripts
 ```
@@ -77,9 +80,12 @@ The `useKitTheme(kit, mode)` hook injects CSS variables onto a scoped container 
 ## Running the App
 The app runs via the "Start application" workflow:
 ```
-npm run dev
+node server.js
 ```
-This starts the Vite dev server at `http://0.0.0.0:5000`.
+This starts an Express server at `http://0.0.0.0:5000` which serves the Vite dev server as middleware (in dev mode) and handles the `/api/extract-url` color extraction endpoint.
+
+### Backend API
+- `POST /api/extract-url` — Accepts `{ url }`, fetches HTML/CSS from the URL server-side (bypassing CORS), and returns `{ colors, semantic, domain, count }`. Returns `{ error, message }` on failure.
 
 ## Key Configuration
 - Vite is configured with `allowedHosts: true` to work behind the Replit proxy

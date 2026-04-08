@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { parseFigmaJson } from '../lib/parseFigmaJson'
-import { extractColorsFromImage, mapColorsToRoles } from '../lib/colorExtract'
+import { BRAND_GUIDELINES, SUGGESTED_BRANDS } from '../lib/brandGuidelines'
 import {
   generateClaudePrompt,
   generateV0Config,
@@ -613,54 +613,112 @@ const ROLE_LABELS = {
   text: 'Text',
 }
 
-function ExtractTab({ onUseColors }) {
-  const [dragOver, setDragOver] = useState(false)
-  const [thumbnail, setThumbnail] = useState(null)
+function autoMapColors(colors) {
+  if (!colors || colors.length === 0) return {}
+  const mapping = {}
+  const sorted = [...colors]
+
+  function luminance(hex) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255
+    const g = parseInt(hex.slice(3, 5), 16) / 255
+    const b = parseInt(hex.slice(5, 7), 16) / 255
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+  }
+
+  function saturation(hex) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255
+    const g = parseInt(hex.slice(3, 5), 16) / 255
+    const b = parseInt(hex.slice(5, 7), 16) / 255
+    const max = Math.max(r, g, b)
+    const min = Math.min(r, g, b)
+    return max === 0 ? 0 : (max - min) / max
+  }
+
+  const colorful = sorted.filter((h) => saturation(h) > 0.2)
+  const light = sorted.filter((h) => luminance(h) > 0.7)
+  const dark = sorted.filter((h) => luminance(h) < 0.15)
+
+  mapping.primary = colorful[0] || sorted[0]
+  mapping.background = light[0] || '#ffffff'
+  mapping.text = dark[0] || '#111827'
+  mapping.secondary = colorful[1] || colorful[0] || sorted[1] || sorted[0]
+  mapping.surface = light[1] || light[0] || '#f9fafb'
+
+  return mapping
+}
+
+function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
+  const [urlInput, setUrlInput] = useState('')
+  const [status, setStatus] = useState('idle')
   const [extractedColors, setExtractedColors] = useState([])
+  const [semantic, setSemantic] = useState({})
+  const [domain, setDomain] = useState('')
   const [roleMapping, setRoleMapping] = useState({})
   const [selectedRole, setSelectedRole] = useState(null)
-  const [error, setError] = useState('')
-  const inputRef = useRef(null)
+  const [errorMsg, setErrorMsg] = useState('')
+  const abortRef = useRef(null)
 
-  function processFile(file) {
-    if (!file || !file.type.startsWith('image/')) {
-      setError('Please upload a PNG, JPG, or WebP image.')
-      return
-    }
-    setError('')
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      const src = ev.target.result
-      setThumbnail(src)
-      const img = new Image()
-      img.onload = () => {
-        const colors = extractColorsFromImage(img, 12)
-        setExtractedColors(colors)
-        setRoleMapping(mapColorsToRoles(colors))
-        setSelectedRole(null)
+  const brandSuggestion = urlInput.trim().toLowerCase().replace(/\s+/g, '')
+  const matchedBrand = Object.keys(BRAND_GUIDELINES).find((b) => b === brandSuggestion)
+
+  async function handleExtractWithUrl(targetUrl) {
+    const url = (targetUrl || urlInput).trim()
+    if (!url) return
+    setStatus('loading')
+    setErrorMsg('')
+    setExtractedColors([])
+    setSemantic({})
+    setRoleMapping({})
+    setSelectedRole(null)
+
+    const controller = new AbortController()
+    abortRef.current = controller
+
+    try {
+      const resp = await fetch('/api/extract-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+        signal: controller.signal,
+      })
+      const data = await resp.json()
+      if (data.error) {
+        setErrorMsg(data.message)
+        setStatus('error')
+      } else {
+        setExtractedColors(data.colors || [])
+        setSemantic(data.semantic || {})
+        setDomain(data.domain || url)
+        setRoleMapping(autoMapColors(data.colors || []))
+        setStatus('success')
       }
-      img.src = src
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        setStatus('idle')
+      } else {
+        setErrorMsg('Something went wrong. Please try again.')
+        setStatus('error')
+      }
     }
-    reader.readAsDataURL(file)
   }
 
-  function handleDrop(e) {
-    e.preventDefault()
-    setDragOver(false)
-    processFile(e.dataTransfer.files[0])
+  function handleExtract() {
+    handleExtractWithUrl(urlInput)
   }
 
-  function handleFileChange(e) {
-    processFile(e.target.files[0])
+  function handleCancel() {
+    abortRef.current?.abort()
+    setStatus('idle')
   }
 
-  function handleSwatchClick(hex, role) {
-    if (selectedRole) {
-      setRoleMapping((prev) => ({ ...prev, [selectedRole]: hex }))
-      setSelectedRole(null)
-    } else {
-      setSelectedRole(role)
-    }
+  function handleReset() {
+    setStatus('idle')
+    setUrlInput('')
+    setExtractedColors([])
+    setSemantic({})
+    setRoleMapping({})
+    setSelectedRole(null)
+    setErrorMsg('')
   }
 
   function handleRoleMappingSwatchClick(role) {
@@ -671,51 +729,94 @@ function ExtractTab({ onUseColors }) {
     onUseColors(roleMapping)
   }
 
-  const hasColors = extractedColors.length > 0
+  function handleBrandChip(brand) {
+    const url = BRAND_GUIDELINES[brand]
+    setUrlInput(url)
+    setTimeout(() => handleExtractWithUrl(url), 0)
+  }
+
+  function handleMatchedBrandClick() {
+    const url = BRAND_GUIDELINES[matchedBrand]
+    setUrlInput(url)
+    setTimeout(() => handleExtractWithUrl(url), 0)
+  }
+
+  const displayDomain = domain || urlInput
 
   return (
-    <div className="cp-extract-tab">
-      {!thumbnail ? (
-        <div
-          className={`cp-extract-dropzone ${dragOver ? 'cp-extract-dropzone--active' : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={handleDrop}
-          onClick={() => inputRef.current?.click()}
-        >
-          <div className="cp-extract-dropzone-icon">🖼</div>
-          <div className="cp-extract-dropzone-text">Drop a screenshot here or click to upload</div>
-          <div className="cp-extract-dropzone-hint">Accepts PNG, JPG, WebP</div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            className="cp-picker-hidden"
-            onChange={handleFileChange}
-            tabIndex={-1}
-          />
+    <div className="cp-extract-tab cp-url-extract-tab">
+      {status === 'idle' && (
+        <>
+          <div className="cp-url-input-wrap">
+            <input
+              className="cp-url-input"
+              type="url"
+              placeholder="Paste any website URL..."
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && urlInput.trim() && handleExtract()}
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {matchedBrand && (
+              <button className="cp-url-brand-suggestion" onClick={handleMatchedBrandClick}>
+                Use {matchedBrand.charAt(0).toUpperCase() + matchedBrand.slice(1)}'s brand guidelines →
+              </button>
+            )}
+          </div>
+          <button
+            className="cp-url-extract-btn"
+            type="button"
+            disabled={!urlInput.trim()}
+            onClick={handleExtract}
+          >
+            Extract Colors →
+          </button>
+          <div className="cp-url-brands">
+            <span className="cp-url-brands-label">Or try a brand</span>
+            <div className="cp-url-brand-chips">
+              {SUGGESTED_BRANDS.map((brand) => (
+                <button
+                  key={brand}
+                  className="cp-url-brand-chip"
+                  type="button"
+                  onClick={() => handleBrandChip(brand)}
+                >
+                  {brand.charAt(0).toUpperCase() + brand.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {status === 'loading' && (
+        <div className="cp-url-loading">
+          <div className="cp-url-spinner" />
+          <p className="cp-url-loading-text">Fetching colors from <strong>{(() => { try { return new URL(urlInput.trim().startsWith('http') ? urlInput.trim() : 'https://' + urlInput.trim()).hostname } catch { return urlInput.trim() } })()}</strong>...</p>
+          <button className="cp-url-cancel-btn" type="button" onClick={handleCancel}>Cancel</button>
         </div>
-      ) : (
-        <div className="cp-extract-uploaded">
-          <div className="cp-extract-thumb-wrap">
-            <img src={thumbnail} alt="Uploaded screenshot" className="cp-extract-thumb" />
-            <button
-              className="cp-extract-reupload"
-              onClick={() => { setThumbnail(null); setExtractedColors([]); setRoleMapping({}); setSelectedRole(null) }}
-              title="Upload a different image"
-            >
-              ✕ Change image
-            </button>
+      )}
+
+      {status === 'error' && (
+        <div className="cp-url-error">
+          <div className="cp-url-error-icon">⚠️</div>
+          <p className="cp-url-error-title">We couldn't extract colors from this URL.</p>
+          <p className="cp-url-error-sub">{errorMsg}</p>
+          <div className="cp-url-error-actions">
+            <button className="cp-url-try-again-btn" type="button" onClick={handleReset}>Try another URL</button>
+            <button className="cp-url-picker-btn" type="button" onClick={onSwitchToColorPicker}>Use Color Picker instead</button>
           </div>
         </div>
       )}
 
-      {error && <p className="cp-parse-error">{error}</p>}
-
-      {hasColors && (
+      {status === 'success' && (
         <>
           <div className="cp-extract-section">
-            <div className="cp-extract-section-label">Extracted Colors</div>
+            <div className="cp-url-success-header">
+              <span className="cp-url-success-count">Found {extractedColors.length} colors from <strong>{displayDomain}</strong></span>
+              <button className="cp-url-reset-link" onClick={handleReset}>Try another URL</button>
+            </div>
             <div className="cp-extract-swatches">
               {extractedColors.map((hex) => (
                 <button
@@ -723,7 +824,12 @@ function ExtractTab({ onUseColors }) {
                   className={`cp-extract-swatch ${selectedRole ? 'cp-extract-swatch--selectable' : ''}`}
                   style={{ background: hex }}
                   title={selectedRole ? `Assign ${hex} to ${ROLE_LABELS[selectedRole]}` : hex}
-                  onClick={() => { if (selectedRole) { setRoleMapping((prev) => ({ ...prev, [selectedRole]: hex })); setSelectedRole(null) } }}
+                  onClick={() => {
+                    if (selectedRole) {
+                      setRoleMapping((prev) => ({ ...prev, [selectedRole]: hex }))
+                      setSelectedRole(null)
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -731,6 +837,23 @@ function ExtractTab({ onUseColors }) {
               <p className="cp-extract-pick-hint">Click a swatch above to assign it to <strong>{ROLE_LABELS[selectedRole]}</strong></p>
             )}
           </div>
+
+          {Object.keys(semantic).length > 0 && (
+            <div className="cp-extract-section">
+              <div className="cp-extract-section-label">
+                Semantic CSS Variables <span className="cp-semantic-badge">Semantic</span>
+              </div>
+              <div className="cp-semantic-vars">
+                {Object.entries(semantic).slice(0, 8).map(([name, value]) => (
+                  <div key={name} className="cp-semantic-var-row">
+                    <div className="cp-semantic-var-swatch" style={{ background: value }} />
+                    <code className="cp-semantic-var-name">--{name}</code>
+                    <span className="cp-semantic-var-value">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="cp-extract-section">
             <div className="cp-extract-section-label">Role Mapping</div>
@@ -761,7 +884,7 @@ function ExtractTab({ onUseColors }) {
           </div>
 
           <button className="cp-save-btn" type="button" onClick={handleUse}>
-            Use These Colors
+            Use These Colors →
           </button>
         </>
       )}
@@ -835,7 +958,7 @@ export default function CreatePage() {
               onClick={() => setActiveTab('extract')}
               type="button"
             >
-              Extract from Image
+              From URL
             </button>
           </div>
 
@@ -862,7 +985,7 @@ export default function CreatePage() {
             ) : activeTab === 'import' ? (
               <ImportTab onImport={handleImport} />
             ) : (
-              <ExtractTab onUseColors={handleImport} />
+              <UrlExtractTab onUseColors={handleImport} onSwitchToColorPicker={() => setActiveTab('build')} />
             )}
           </div>
 
