@@ -750,8 +750,8 @@ function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
           <div className="cp-url-input-wrap">
             <input
               className="cp-url-input"
-              type="url"
-              placeholder="Paste any website URL..."
+              type="text"
+              placeholder="Paste a URL, brand name or app name"
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && urlInput.trim() && handleExtract()}
