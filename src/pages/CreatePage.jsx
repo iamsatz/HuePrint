@@ -7,7 +7,50 @@ import {
   generateCursorRules,
   generateReplitPrompt,
 } from '../lib/exportGenerators'
+import PreviewDashboard from '../components/create/previews/PreviewDashboard'
+import PreviewPortfolio from '../components/create/previews/PreviewPortfolio'
+import PreviewBlog from '../components/create/previews/PreviewBlog'
+import PreviewEcommerceShop from '../components/create/previews/PreviewEcommerceShop'
+import PreviewProductPage from '../components/create/previews/PreviewProductPage'
+import PreviewPricing from '../components/create/previews/PreviewPricing'
+import PreviewSignIn from '../components/create/previews/PreviewSignIn'
+import PreviewSignUp from '../components/create/previews/PreviewSignUp'
+import PreviewSettings from '../components/create/previews/PreviewSettings'
+import PreviewProfile from '../components/create/previews/PreviewProfile'
+import PreviewDocumentation from '../components/create/previews/PreviewDocumentation'
+import PreviewAdminTable from '../components/create/previews/PreviewAdminTable'
+import PreviewOnboarding from '../components/create/previews/PreviewOnboarding'
+import PreviewRestaurant from '../components/create/previews/PreviewRestaurant'
+import PreviewRealEstate from '../components/create/previews/PreviewRealEstate'
+import PreviewJobBoard from '../components/create/previews/PreviewJobBoard'
+import PreviewAnalytics from '../components/create/previews/PreviewAnalytics'
+import PreviewError404 from '../components/create/previews/PreviewError404'
+import PreviewWaitlist from '../components/create/previews/PreviewWaitlist'
 import './CreatePage.css'
+
+const PREVIEW_PAGES = [
+  { id: 'components', icon: '🧩', label: 'Components', component: null },
+  { id: 'saas', icon: '🚀', label: 'SaaS Landing', component: null },
+  { id: 'dashboard', icon: '📊', label: 'Dashboard', component: PreviewDashboard },
+  { id: 'portfolio', icon: '🎨', label: 'Portfolio', component: PreviewPortfolio },
+  { id: 'blog', icon: '📝', label: 'Blog', component: PreviewBlog },
+  { id: 'ecommerce', icon: '🛍', label: 'E-commerce Shop', component: PreviewEcommerceShop },
+  { id: 'product', icon: '📦', label: 'Product Page', component: PreviewProductPage },
+  { id: 'pricing', icon: '💳', label: 'Pricing Page', component: PreviewPricing },
+  { id: 'signin', icon: '🔑', label: 'Sign-in / Auth', component: PreviewSignIn },
+  { id: 'signup', icon: '📋', label: 'Sign-up Flow', component: PreviewSignUp },
+  { id: 'settings', icon: '⚙️', label: 'Settings', component: PreviewSettings },
+  { id: 'profile', icon: '👤', label: 'Profile', component: PreviewProfile },
+  { id: 'docs', icon: '📖', label: 'Documentation', component: PreviewDocumentation },
+  { id: 'admin', icon: '🗂', label: 'Admin Table', component: PreviewAdminTable },
+  { id: 'onboarding', icon: '🎯', label: 'Onboarding', component: PreviewOnboarding },
+  { id: 'restaurant', icon: '🍽', label: 'Restaurant / Menu', component: PreviewRestaurant },
+  { id: 'realestate', icon: '🏠', label: 'Real Estate', component: PreviewRealEstate },
+  { id: 'jobs', icon: '💼', label: 'Job Board', component: PreviewJobBoard },
+  { id: 'analytics', icon: '📈', label: 'Analytics', component: PreviewAnalytics },
+  { id: 'error', icon: '⚠️', label: '404 / Error', component: PreviewError404 },
+  { id: 'waitlist', icon: '⏳', label: 'Waitlist / Coming Soon', component: PreviewWaitlist },
+]
 
 const ROLES = [
   { key: 'primary', label: 'Primary', required: true, hint: 'CTAs, buttons, links' },
@@ -501,7 +544,7 @@ function ImportTab({ onImport }) {
 
 export default function CreatePage() {
   const [activeTab, setActiveTab] = useState('build')
-  const [previewTab, setPreviewTab] = useState('components')
+  const [previewPage, setPreviewPage] = useState('components')
   const [values, setValues] = useState({ ...DEFAULT_COLORS })
   const [kitName, setKitName] = useState('')
   const [showExport, setShowExport] = useState(false)
@@ -588,21 +631,17 @@ export default function CreatePage() {
 
         <div className="cp-right">
           <div className="cp-preview-header">
-            <div className="cp-preview-tabs">
-              <button
-                className={`cp-preview-tab ${previewTab === 'components' ? 'cp-preview-tab--active' : ''}`}
-                onClick={() => setPreviewTab('components')}
-                type="button"
+            <div className="cp-preview-dropdown-wrap">
+              <select
+                className="cp-preview-dropdown"
+                value={previewPage}
+                onChange={(e) => setPreviewPage(e.target.value)}
+                aria-label="Select preview page type"
               >
-                Components
-              </button>
-              <button
-                className={`cp-preview-tab ${previewTab === 'app' ? 'cp-preview-tab--active' : ''}`}
-                onClick={() => setPreviewTab('app')}
-                type="button"
-              >
-                App Preview
-              </button>
+                {PREVIEW_PAGES.map((p) => (
+                  <option key={p.id} value={p.id}>{p.icon} {p.label}</option>
+                ))}
+              </select>
             </div>
             {!hasRequiredColors && (
               <span className="cp-preview-hint">Set Primary, Background &amp; Text to see preview</span>
@@ -615,11 +654,15 @@ export default function CreatePage() {
                 <div className="cp-preview-empty-icon">🎨</div>
                 <p>Set your Primary, Background, and Text colors to see a live preview of your kit.</p>
               </div>
-            ) : previewTab === 'components' ? (
+            ) : previewPage === 'components' ? (
               <LivePreviewComponents kit={kit} />
-            ) : (
+            ) : previewPage === 'saas' ? (
               <LivePreviewApp kit={kit} />
-            )}
+            ) : (() => {
+              const page = PREVIEW_PAGES.find((p) => p.id === previewPage)
+              const PageComponent = page?.component
+              return PageComponent ? <PageComponent kit={kit} /> : null
+            })()}
           </div>
         </div>
       </div>
