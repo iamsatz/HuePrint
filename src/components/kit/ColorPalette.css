@@ -1,0 +1,87 @@
+.cp-root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 700px) {
+  .cp-root {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.cp-column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 16px;
+}
+
+.cp-mode-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cp-mode-dot--light {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+}
+
+.cp-mode-dot--dark {
+  background: #1e293b;
+  border: 1.5px solid #334155;
+}
+
+.cp-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .cp-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+}
+
+.cp-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cp-swatch-rect {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: default;
+}
+
+.cp-swatch-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-swatch-hex {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.625rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

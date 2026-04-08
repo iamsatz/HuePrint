@@ -28,5 +28,26 @@
       "success": "#4ADE80",
       "warning": "#FDE047"
     }
+  },
+  "typography": {
+    "headingFont": "Poppins",
+    "bodyFont": "Open Sans",
+    "baseFontSize": "16px",
+    "lineHeight": "1.6"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "16px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 3px rgba(0,0,0,0.1)",
+    "md": "0 4px 8px rgba(0,0,0,0.12)",
+    "lg": "0 12px 24px rgba(0,0,0,0.15)"
   }
 }

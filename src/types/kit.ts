@@ -4,7 +4,11 @@ export interface ColorSet {
   background: string
   surface: string
   text: string
+  textMuted: string
   border: string
+  accent: string
+  success: string
+  warning: string
 }
 
 export interface Typography {
@@ -19,22 +23,22 @@ export interface Kit {
   name: string
   industry: string
   description: string
-  colors: {
+  palette: {
     light: ColorSet
     dark: ColorSet
   }
-  typography: Typography
-  spacing: {
+  typography?: Typography
+  spacing?: {
     base: string
     scale: number
   }
-  borderRadius: {
+  borderRadius?: {
     sm: string
     md: string
     lg: string
     full: string
   }
-  shadow: {
+  shadow?: {
     sm: string
     md: string
     lg: string

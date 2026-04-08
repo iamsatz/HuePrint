@@ -17,26 +17,35 @@ HuePrint is a React + Vite web application for browsing and exporting design tok
 ├── public/
 │   └── kits/               # Kit JSON data files
 │       ├── index.json       # Kit manifest (list of kit IDs)
-│       └── *.json           # Individual kit data (name, industry, description, palette)
+│       └── *.json           # Individual kit data (name, industry, description, palette, typography, spacing, borderRadius, shadow)
 ├── src/
 │   ├── App.jsx              # Root app with BrowserRouter + Routes
 │   ├── main.jsx             # React entry point
 │   ├── index.css            # Global styles (hero layout, typography)
 │   ├── types/
-│   │   └── kit.js           # Kit type definitions + INDUSTRIES constant
+│   │   └── kit.ts           # Kit TypeScript type definitions
 │   ├── lib/
-│   │   └── loadKits.js      # loadKits() + getSwatchColors() utilities
+│   │   ├── loadKits.js      # loadKits() + getSwatchColors() utilities
+│   │   └── useKitTheme.js   # useKitTheme(kit, mode) hook — injects CSS vars onto a scoped ref
 │   ├── components/
 │   │   ├── nav/
 │   │   │   └── TopNav.jsx   # Sticky top nav with HuePrint wordmark + Browse link
-│   │   └── browse/
-│   │       ├── IndustryFilter.jsx  # Tab/pill filter row
-│   │       ├── KitCard.jsx         # Kit card with swatches, name, industry tag, description
-│   │       └── KitGrid.jsx         # Responsive 3/2/1 column grid
+│   │   ├── browse/
+│   │   │   ├── IndustryFilter.jsx  # Tab/pill filter row
+│   │   │   ├── KitCard.jsx         # Kit card with swatches, name, industry tag, description
+│   │   │   └── KitGrid.jsx         # Responsive 3/2/1 column grid
+│   │   └── kit/
+│   │       ├── ColorPalette.jsx    # Radix-style 10-role color swatch grid (light + dark columns)
+│   │       ├── ColorPalette.css
+│   │       ├── ComponentGallery.jsx # Live component preview using kit CSS variables
+│   │       ├── ComponentGallery.css
+│   │       ├── TokenTable.jsx      # Raw token display (typography, spacing, radius, shadow)
+│   │       └── TokenTable.css
 │   └── pages/
 │       ├── LandingPage.jsx  # / route - hero section with CTA to /browse
 │       ├── BrowsePage.jsx   # /browse route - kit grid with industry filtering
-│       └── KitDetailPage.jsx  # /kit/:id route - "Coming soon" placeholder
+│       ├── KitDetailPage.jsx  # /kit/:id route - full kit detail with color panel, gallery, token table
+│       └── KitDetailPage.css
 ├── attached_assets/         # Design assets and metadata
 ├── PRD.md                   # Product requirements document
 ├── index.html               # HTML entry point
@@ -48,7 +57,22 @@ HuePrint is a React + Vite web application for browsing and exporting design tok
 ## Routes
 - `/` — Landing page with hero section and "Browse Kits" CTA
 - `/browse` — Kit browser with industry filter tabs and kit grid
-- `/kit/:id` — Kit detail page (placeholder "Coming soon")
+- `/kit/:id` — Kit detail page with color tokens, component gallery, and token table
+
+## Kit Detail Page (`/kit/:id`)
+The kit detail page renders three sections:
+1. **Color Tokens** — Radix-style swatch grid with all 10 palette roles (background, surface, primary, secondary, accent, text, textMuted, border, success, warning) shown in two columns: light mode and dark mode
+2. **Component Gallery** — Live UI preview using CSS custom properties injected from the kit. Components: primary/secondary/ghost/destructive buttons, text input + select + checkbox, info/success/warning/error alerts, card, 5 badges, mini nav bar, typography specimen
+3. **Token Table** — Raw token values for typography, spacing, border radius, and shadow
+
+A Light/Dark toggle at the top switches all components and swatches simultaneously.
+
+### CSS Variable Injection
+The `useKitTheme(kit, mode)` hook injects CSS variables onto a scoped container `ref`:
+- Color vars: `--hp-background`, `--hp-surface`, `--hp-primary`, `--hp-secondary`, `--hp-accent`, `--hp-text`, `--hp-textMuted`, `--hp-border`, `--hp-success`, `--hp-warning`
+- Typography: `--hp-heading-font`, `--hp-body-font`, `--hp-font-size`, `--hp-line-height`
+- Radii: `--hp-radius-sm/md/lg/full`
+- Shadows: `--hp-shadow-sm/md/lg`
 
 ## Running the App
 The app runs via the "Start application" workflow:
@@ -72,9 +96,13 @@ Each kit JSON in `public/kits/` follows this shape:
   "industry": "SaaS",
   "description": "...",
   "palette": {
-    "light": { "background": "#fff", "surface": "#...", "primary": "#...", ... },
+    "light": { "background": "#fff", "surface": "#...", "primary": "#...", "secondary": "#...", "accent": "#...", "text": "#...", "textMuted": "#...", "border": "#...", "success": "#...", "warning": "#..." },
     "dark": { ... }
-  }
+  },
+  "typography": { "headingFont": "Inter", "bodyFont": "Inter", "baseFontSize": "16px", "lineHeight": "1.6" },
+  "spacing": { "base": "4px", "scale": 1.5 },
+  "borderRadius": { "sm": "4px", "md": "8px", "lg": "12px", "full": "9999px" },
+  "shadow": { "sm": "...", "md": "...", "lg": "..." }
 }
 ```
 The `public/kits/index.json` manifest lists all kit IDs to load.
