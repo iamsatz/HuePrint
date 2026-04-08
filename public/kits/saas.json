@@ -22,7 +22,7 @@
     }
   },
   "typography": {
-    "headingFont": "Inter",
+    "headingFont": "Manrope",
     "bodyFont": "Inter",
     "baseFontSize": "16px",
     "lineHeight": "1.6"

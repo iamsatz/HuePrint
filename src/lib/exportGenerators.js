@@ -23,6 +23,8 @@ export function generateClaudePrompt(kit) {
   const name = kit.name || 'Design System'
   const industry = kit.industry || 'Product'
   const description = kit.description || ''
+  const headingFont = kit.typography?.headingFont || 'Inter'
+  const bodyFont = kit.typography?.bodyFont || 'Inter'
 
   return `# Design System: ${name}
 
@@ -56,11 +58,12 @@ Industry: ${industry}
 - **Success** (\`${dark.success}\`): Positive feedback in dark mode.
 - **Warning** (\`${dark.warning}\`): Cautionary feedback in dark mode.
 
-## Typography Guidelines
-- Use a clean, readable sans-serif for body text. Prioritize legibility at small sizes.
-- Headings should establish clear hierarchy. Bold weights for h1–h2, medium for h3–h4.
-- Base font size: 16px. Line height: 1.5–1.65 for body text.
-- Avoid using more than two typeface families.
+## Typography
+- Heading font: ${headingFont} — use for all h1–h4 elements
+- Body font: ${bodyFont} — use for body copy, labels, and UI text
+- Google Fonts import: @import url('https://fonts.googleapis.com/css2?family=${headingFont.replace(/ /g, '+')}${headingFont !== bodyFont ? `&family=${bodyFont.replace(/ /g, '+')}` : ''}&display=swap');
+- Base font size: ${kit.typography?.baseFontSize || '16px'}
+- Line height: ${kit.typography?.lineHeight || '1.6'}
 
 ## Spacing Guidelines
 - Use a consistent 8px base spacing unit.
@@ -84,6 +87,8 @@ Industry: ${industry}
 export function generateV0Config(kit) {
   const light = kit.palette?.light || {}
   const dark = kit.palette?.dark || {}
+  const headingFont = kit.typography?.headingFont || 'Inter'
+  const bodyFont = kit.typography?.bodyFont || 'Inter'
 
   const colorEntries = (palette, prefix) =>
     Object.entries(palette)
@@ -105,8 +110,8 @@ ${colorEntries(dark, '')}
         },
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        heading: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['${bodyFont}', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['${headingFont}', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
@@ -133,6 +138,8 @@ export function generateCursorRules(kit) {
   const light = kit.palette?.light || {}
   const dark = kit.palette?.dark || {}
   const name = kit.name || 'Design System'
+  const headingFont = kit.typography?.headingFont || 'Inter'
+  const bodyFont = kit.typography?.bodyFont || 'Inter'
 
   const cssVarBlock = (palette, suffix) =>
     Object.entries(palette)
@@ -149,6 +156,8 @@ This project uses the **${name}** design system. Always reference the design tok
 \`\`\`css
 :root {
 ${cssVarBlock(light, '')}
+  --font-heading: '${headingFont}', sans-serif;
+  --font-body: '${bodyFont}', sans-serif;
 }
 
 [data-theme="dark"] {
@@ -178,6 +187,8 @@ ${cssVarBlock(dark, '-dark')}
 - Never use \`color: black\` or \`color: white\` directly — use token variables.
 - Destructive actions must use a red tone, not the primary color.
 - Disabled elements should use \`var(--color-border)\` with 60% opacity.
+- Always use \`var(--font-heading)\` for h1–h4 elements.
+- Always use \`var(--font-body)\` for body text, labels, and UI copy.
 
 ## Spacing
 - Base unit: 8px
@@ -202,6 +213,12 @@ export function generateReplitPrompt(kit) {
   const name = kit.name || 'Design System'
   const industry = kit.industry || 'Product'
   const description = kit.description || ''
+  const headingFont = kit.typography?.headingFont || 'Inter'
+  const bodyFont = kit.typography?.bodyFont || 'Inter'
+
+  const fontsParam = headingFont === bodyFont
+    ? `family=${headingFont.replace(/ /g, '+')}`
+    : `family=${headingFont.replace(/ /g, '+')}&family=${bodyFont.replace(/ /g, '+')}`
 
   const cssVarLines = (palette, suffix) =>
     Object.entries(palette)
@@ -216,6 +233,14 @@ Industry: ${industry}
 
 This file provides the design system context for Replit AI. When generating or editing UI components, always use the CSS variables and color tokens defined below.
 
+## Google Fonts Import
+
+Add the following to the top of your global CSS:
+
+\`\`\`css
+@import url('https://fonts.googleapis.com/css2?${fontsParam}&display=swap');
+\`\`\`
+
 ## CSS Variables
 
 Add the following to your global CSS (e.g., \`index.css\` or \`globals.css\`):
@@ -223,6 +248,8 @@ Add the following to your global CSS (e.g., \`index.css\` or \`globals.css\`):
 \`\`\`css
 :root {
 ${cssVarLines(light, '')}
+  --font-heading: '${headingFont}', sans-serif;
+  --font-body: '${bodyFont}', sans-serif;
 }
 
 [data-theme="dark"] {
@@ -235,6 +262,14 @@ ${cssVarLines(dark, '-dark')}
 Reference variables in your styles like this:
 
 \`\`\`css
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
+
+body, p, label, input {
+  font-family: var(--font-body);
+}
+
 .button-primary {
   background-color: var(--color-primary);
   color: var(--color-background);
@@ -269,13 +304,22 @@ Reference variables in your styles like this:
 | \`--color-success\` | \`${light.success}\` | \`${dark.success}\` | Success states |
 | \`--color-warning\` | \`${light.warning}\` | \`${dark.warning}\` | Warning states |
 
+## Typography
+
+| Token | Value | Purpose |
+|-------|-------|---------|
+| \`--font-heading\` | \`'${headingFont}', sans-serif\` | h1–h4 headings |
+| \`--font-body\` | \`'${bodyFont}', sans-serif\` | Body text and UI labels |
+
 ## Design Rules for Replit AI
 1. Always use CSS variables instead of hardcoded hex values.
 2. Use \`var(--color-primary)\` for the main call-to-action button.
 3. Use \`var(--color-surface)\` as the background for cards, modals, and sidebars.
 4. Use \`var(--color-text-muted)\` for labels, captions, and helper text.
-5. Spacing scale: 4px, 8px, 16px, 24px, 32px, 48px, 64px — avoid arbitrary values.
-6. Border radius: small=4px, default=8px, large=12px, pill=9999px.
-7. Ensure WCAG AA contrast (4.5:1) between text and background tokens.
+5. Use \`var(--font-heading)\` for all heading elements (h1–h4).
+6. Use \`var(--font-body)\` for all body text, labels, inputs, and UI copy.
+7. Spacing scale: 4px, 8px, 16px, 24px, 32px, 48px, 64px — avoid arbitrary values.
+8. Border radius: small=4px, default=8px, large=12px, pill=9999px.
+9. Ensure WCAG AA contrast (4.5:1) between text and background tokens.
 `
 }

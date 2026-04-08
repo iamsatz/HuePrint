@@ -30,8 +30,8 @@
     }
   },
   "typography": {
-    "headingFont": "Georgia",
-    "bodyFont": "Source Serif Pro",
+    "headingFont": "Libre Baskerville",
+    "bodyFont": "Source Sans Pro",
     "baseFontSize": "16px",
     "lineHeight": "1.75"
   },

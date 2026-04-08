@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { generateRadixScale } from '../../lib/generateRadixScale'
 import './ColorPalette.css'
 
@@ -52,11 +52,22 @@ function ColorRow({ colorKey, label, palette, mode }) {
 }
 
 export default function ColorPalette({ kit, mode = 'light' }) {
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!rootRef.current || !kit) return
+    const el = rootRef.current
+    if (kit.typography) {
+      if (kit.typography.headingFont) el.style.setProperty('--hp-heading-font', `'${kit.typography.headingFont}', sans-serif`)
+      if (kit.typography.bodyFont) el.style.setProperty('--hp-body-font', `'${kit.typography.bodyFont}', sans-serif`)
+    }
+  }, [kit])
+
   if (!kit) return null
   const palette = kit.palette[mode]
 
   return (
-    <div className="cp-root">
+    <div className="cp-root" ref={rootRef}>
       {/* Category group labels */}
       <div className="cp-categories-row">
         <div className="cp-row-label-spacer" />

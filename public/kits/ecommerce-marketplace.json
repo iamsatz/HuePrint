@@ -30,7 +30,7 @@
     }
   },
   "typography": {
-    "headingFont": "Inter",
+    "headingFont": "Plus Jakarta Sans",
     "bodyFont": "Inter",
     "baseFontSize": "16px",
     "lineHeight": "1.6"

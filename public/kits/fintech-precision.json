@@ -30,8 +30,8 @@
     }
   },
   "typography": {
-    "headingFont": "Inter",
-    "bodyFont": "Inter",
+    "headingFont": "IBM Plex Sans",
+    "bodyFont": "IBM Plex Sans",
     "baseFontSize": "15px",
     "lineHeight": "1.6"
   },

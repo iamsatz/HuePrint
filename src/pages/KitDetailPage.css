@@ -351,6 +351,72 @@
 .kd-btn--primary { background: #8B5CF6; color: #ffffff; }
 .kd-btn--primary:hover { filter: brightness(0.9); }
 
+/* ─── Typography specimen ────────────────────────────── */
+.kd-section--typography {
+  margin-bottom: 48px;
+}
+
+.kd-font-specimen-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .kd-font-specimen-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kd-font-specimen-card {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 16px;
+  padding: 24px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.kd-font-specimen-sample--heading {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #0f1929;
+  letter-spacing: -0.02em;
+}
+
+.kd-font-specimen-sample--body {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.kd-font-specimen-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  padding-top: 12px;
+}
+
+.kd-font-specimen-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f1929;
+  letter-spacing: -0.01em;
+}
+
+.kd-font-specimen-role {
+  font-size: 0.75rem;
+  color: #8B5CF6;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* ─── Responsive ─────────────────────────────────────── */
 @media (max-width: 600px) {
   .kd-page { padding: 24px 16px 80px; }

@@ -5,6 +5,7 @@ import ComponentGallery from '../components/kit/ComponentGallery'
 import TokenTable from '../components/kit/TokenTable'
 import ExportPanel from '../components/kit-detail/ExportPanel'
 import { useCustomKit } from '../context/CustomKitContext'
+import { loadFontPair } from '../lib/loadGoogleFont'
 import './KitDetailPage.css'
 
 function ColorInput({ label, hex, onChange }) {
@@ -139,6 +140,45 @@ function CustomKitDetail({ kit }) {
   )
 }
 
+function FontSpecimen({ kit }) {
+  const headingFont = kit?.typography?.headingFont
+  const bodyFont = kit?.typography?.bodyFont
+  if (!headingFont && !bodyFont) return null
+
+  return (
+    <div className="kd-font-specimen-row">
+      {headingFont && (
+        <div className="kd-font-specimen-card">
+          <div
+            className="kd-font-specimen-sample kd-font-specimen-sample--heading"
+            style={{ fontFamily: `'${headingFont}', serif` }}
+          >
+            Aa
+          </div>
+          <div className="kd-font-specimen-meta">
+            <span className="kd-font-specimen-name">{headingFont}</span>
+            <span className="kd-font-specimen-role">Heading font</span>
+          </div>
+        </div>
+      )}
+      {bodyFont && (
+        <div className="kd-font-specimen-card">
+          <div
+            className="kd-font-specimen-sample kd-font-specimen-sample--body"
+            style={{ fontFamily: `'${bodyFont}', sans-serif` }}
+          >
+            The quick brown fox jumps over the lazy dog.
+          </div>
+          <div className="kd-font-specimen-meta">
+            <span className="kd-font-specimen-name">{bodyFont}</span>
+            <span className="kd-font-specimen-role">Body font</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function KitDetailPage() {
   const { id } = useParams()
   const { customKit } = useCustomKit()
@@ -165,6 +205,9 @@ export default function KitDetailPage() {
       })
       .then((data) => {
         setKit(data)
+        if (data.typography) {
+          loadFontPair(data.typography.headingFont, data.typography.bodyFont)
+        }
         setLoading(false)
       })
       .catch(() => {
@@ -309,6 +352,16 @@ export default function KitDetailPage() {
             </button>
           )}
         </div>
+
+        {kit.typography && (
+          <section className="kd-section kd-section--typography">
+            <div className="kd-section-header">
+              <h2 className="kd-section-title">Typography</h2>
+              <p className="kd-section-desc">The font pair used in this kit.</p>
+            </div>
+            <FontSpecimen kit={kit} />
+          </section>
+        )}
 
         <section className="kd-section">
           <ColorPalette kit={mergedKit} mode={mode} />

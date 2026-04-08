@@ -8,6 +8,8 @@ import {
   generateCursorRules,
   generateReplitPrompt,
 } from '../lib/exportGenerators'
+import { FONT_PAIRS, FONT_PAIR_GROUPS, getDefaultPair } from '../lib/fontPairs'
+import { loadFontPair } from '../lib/loadGoogleFont'
 import PreviewDashboard from '../components/create/previews/PreviewDashboard'
 import PreviewPortfolio from '../components/create/previews/PreviewPortfolio'
 import PreviewBlog from '../components/create/previews/PreviewBlog'
@@ -116,7 +118,7 @@ function deriveSurface(background) {
   return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')
 }
 
-function buildKitFromColors(values, kitName) {
+function buildKitFromColors(values, kitName, fontPair) {
   const primary = values.primary || '#7c3aed'
   const secondary = (values.secondary && isValidHex(values.secondary))
     ? values.secondary
@@ -133,11 +135,19 @@ function buildKitFromColors(values, kitName) {
   let bgB = parseInt(bgHex.slice(4, 6), 16)
   const isDark = (bgR * 299 + bgG * 587 + bgB * 114) / 1000 < 128
 
+  const pair = fontPair || getDefaultPair()
+
   return {
     id: 'custom',
     name: kitName || 'My Custom Kit',
     industry: 'Custom',
     description: 'Your custom brand kit.',
+    typography: {
+      headingFont: pair.heading,
+      bodyFont: pair.body,
+      baseFontSize: '16px',
+      lineHeight: '1.6',
+    },
     palette: {
       light: {
         background,
@@ -178,6 +188,10 @@ function LivePreviewComponents({ kit }) {
     roles.forEach((role) => {
       if (palette[role]) el.style.setProperty(`--hp-${role}`, palette[role])
     })
+    if (kit.typography) {
+      if (kit.typography.headingFont) el.style.setProperty('--hp-heading-font', `'${kit.typography.headingFont}', sans-serif`)
+      if (kit.typography.bodyFont) el.style.setProperty('--hp-body-font', `'${kit.typography.bodyFont}', sans-serif`)
+    }
   }, [kit])
 
   if (!kit) return null
@@ -271,6 +285,10 @@ function LivePreviewApp({ kit }) {
     roles.forEach((role) => {
       if (palette[role]) el.style.setProperty(`--hp-${role}`, palette[role])
     })
+    if (kit.typography) {
+      if (kit.typography.headingFont) el.style.setProperty('--hp-heading-font', `'${kit.typography.headingFont}', sans-serif`)
+      if (kit.typography.bodyFont) el.style.setProperty('--hp-body-font', `'${kit.typography.bodyFont}', sans-serif`)
+    }
   }, [kit])
 
   if (!kit) return null
@@ -465,7 +483,50 @@ function ColorInput({ roleKey, label, hint, required, value, onChange }) {
   )
 }
 
-function BuilderTab({ values, onChange }) {
+function FontPairPicker({ value, onChange }) {
+  const groups = FONT_PAIR_GROUPS.map((group) => ({
+    group,
+    pairs: FONT_PAIRS.filter((p) => p.personality === group),
+  }))
+
+  return (
+    <div className="cp-typography-section">
+      <div className="cp-section-divider">
+        <span className="cp-section-label">Typography</span>
+      </div>
+      <div className="cp-font-pair-row">
+        <div className="cp-font-pair-info">
+          <span className="cp-font-pair-label">Font Pair</span>
+          <span className="cp-font-pair-hint">Heading / Body</span>
+        </div>
+        <select
+          className="cp-font-pair-select"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          aria-label="Select font pair"
+        >
+          {groups.map(({ group, pairs }) => (
+            <optgroup key={group} label={group}>
+              {pairs.map((pair) => (
+                <option key={pair.id} value={pair.id}>
+                  {pair.heading} / {pair.body}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+      {value && (() => {
+        const pair = FONT_PAIRS.find((p) => p.id === value)
+        return pair ? (
+          <p className="cp-font-pair-desc">{pair.description}</p>
+        ) : null
+      })()}
+    </div>
+  )
+}
+
+function BuilderTab({ values, onChange, fontPairId, onFontPairChange }) {
   return (
     <div className="cp-builder-colors">
       {ROLES.map((role) => (
@@ -479,6 +540,7 @@ function BuilderTab({ values, onChange }) {
           onChange={onChange}
         />
       ))}
+      <FontPairPicker value={fontPairId} onChange={onFontPairChange} />
     </div>
   )
 }
@@ -713,9 +775,16 @@ export default function CreatePage() {
   const [values, setValues] = useState({ ...DEFAULT_COLORS })
   const [kitName, setKitName] = useState('')
   const [showExport, setShowExport] = useState(false)
+  const [fontPairId, setFontPairId] = useState(getDefaultPair().id)
+
+  const selectedFontPair = FONT_PAIRS.find((p) => p.id === fontPairId) || getDefaultPair()
+
+  useEffect(() => {
+    loadFontPair(selectedFontPair.heading, selectedFontPair.body)
+  }, [selectedFontPair])
 
   const hasRequiredColors = isValidHex(values.primary) && isValidHex(values.background) && isValidHex(values.text)
-  const kit = hasRequiredColors ? buildKitFromColors(values, kitName) : null
+  const kit = hasRequiredColors ? buildKitFromColors(values, kitName, selectedFontPair) : null
 
   function handleColorChange(key, val) {
     setValues((prev) => ({ ...prev, [key]: val }))
@@ -728,6 +797,12 @@ export default function CreatePage() {
     }
     setValues(next)
     setActiveTab('build')
+  }
+
+  function handleFontPairChange(id) {
+    setFontPairId(id)
+    const pair = FONT_PAIRS.find((p) => p.id === id)
+    if (pair) loadFontPair(pair.heading, pair.body)
   }
 
   return (
@@ -777,7 +852,12 @@ export default function CreatePage() {
                     onChange={(e) => setKitName(e.target.value)}
                   />
                 </div>
-                <BuilderTab values={values} onChange={handleColorChange} />
+                <BuilderTab
+                  values={values}
+                  onChange={handleColorChange}
+                  fontPairId={fontPairId}
+                  onFontPairChange={handleFontPairChange}
+                />
               </>
             ) : activeTab === 'import' ? (
               <ImportTab onImport={handleImport} />

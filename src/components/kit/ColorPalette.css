@@ -13,6 +13,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  font-family: var(--hp-body-font, inherit);
 }
 
 /* ── Shared row helpers ── */

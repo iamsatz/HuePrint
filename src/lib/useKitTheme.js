@@ -28,10 +28,10 @@ export function useKitTheme(kit, mode) {
     })
 
     if (kit.typography) {
-      el.style.setProperty('--hp-heading-font', kit.typography.headingFont)
-      el.style.setProperty('--hp-body-font', kit.typography.bodyFont)
-      el.style.setProperty('--hp-font-size', kit.typography.baseFontSize)
-      el.style.setProperty('--hp-line-height', kit.typography.lineHeight)
+      if (kit.typography.headingFont) el.style.setProperty('--hp-heading-font', `'${kit.typography.headingFont}', sans-serif`)
+      if (kit.typography.bodyFont) el.style.setProperty('--hp-body-font', `'${kit.typography.bodyFont}', sans-serif`)
+      if (kit.typography.baseFontSize) el.style.setProperty('--hp-font-size', kit.typography.baseFontSize)
+      if (kit.typography.lineHeight) el.style.setProperty('--hp-line-height', kit.typography.lineHeight)
     }
 
     if (kit.borderRadius) {
