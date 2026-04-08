@@ -1,0 +1,53 @@
+{
+  "id": "education-digital",
+  "name": "Education Digital",
+  "industry": "Education",
+  "description": "A fresh, modern palette for EdTech startups and digital classrooms. Cool teals and soft blues make learning feel approachable and energetic.",
+  "palette": {
+    "light": {
+      "background": "#F0FDFA",
+      "surface": "#CCFBF1",
+      "primary": "#0D9488",
+      "secondary": "#0891B2",
+      "accent": "#06B6D4",
+      "text": "#134E4A",
+      "textMuted": "#6B7280",
+      "border": "#99F6E4",
+      "success": "#10B981",
+      "warning": "#F59E0B"
+    },
+    "dark": {
+      "background": "#042F2E",
+      "surface": "#134E4A",
+      "primary": "#2DD4BF",
+      "secondary": "#22D3EE",
+      "accent": "#67E8F9",
+      "text": "#F0FDFA",
+      "textMuted": "#99F6E4",
+      "border": "#115E59",
+      "success": "#34D399",
+      "warning": "#FCD34D"
+    }
+  },
+  "typography": {
+    "headingFont": "Poppins",
+    "bodyFont": "Open Sans",
+    "baseFontSize": "16px",
+    "lineHeight": "1.65"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "6px",
+    "md": "12px",
+    "lg": "18px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 3px rgba(0,0,0,0.06)",
+    "md": "0 4px 8px rgba(0,0,0,0.08)",
+    "lg": "0 12px 24px rgba(0,0,0,0.1)"
+  }
+}

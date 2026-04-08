@@ -1,0 +1,53 @@
+{
+  "id": "startup-fresh",
+  "name": "Startup Fresh",
+  "industry": "Startup/Indie",
+  "description": "Playful gradients-inspired palette with vibrant coral and sky blue for early-stage startups and indie makers. Optimistic and high-energy.",
+  "palette": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#F0F9FF",
+      "primary": "#0EA5E9",
+      "secondary": "#F43F5E",
+      "accent": "#8B5CF6",
+      "text": "#0F172A",
+      "textMuted": "#64748B",
+      "border": "#BAE6FD",
+      "success": "#10B981",
+      "warning": "#F59E0B"
+    },
+    "dark": {
+      "background": "#0F172A",
+      "surface": "#1E293B",
+      "primary": "#38BDF8",
+      "secondary": "#FB7185",
+      "accent": "#A78BFA",
+      "text": "#F8FAFC",
+      "textMuted": "#94A3B8",
+      "border": "#334155",
+      "success": "#34D399",
+      "warning": "#FCD34D"
+    }
+  },
+  "typography": {
+    "headingFont": "DM Sans",
+    "bodyFont": "DM Sans",
+    "baseFontSize": "16px",
+    "lineHeight": "1.6"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "8px",
+    "md": "14px",
+    "lg": "22px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 3px rgba(0,0,0,0.05)",
+    "md": "0 4px 12px rgba(0,0,0,0.08)",
+    "lg": "0 12px 28px rgba(0,0,0,0.1)"
+  }
+}

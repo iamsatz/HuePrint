@@ -1,0 +1,53 @@
+{
+  "id": "food-savory",
+  "name": "Food Savory",
+  "industry": "Food & Restaurant",
+  "description": "Rich terracottas and warm creams for restaurants, food delivery apps, and culinary brands. Appetite-stimulating and inviting.",
+  "palette": {
+    "light": {
+      "background": "#FFFBF5",
+      "surface": "#FEF3E8",
+      "primary": "#C2410C",
+      "secondary": "#92400E",
+      "accent": "#F97316",
+      "text": "#1C1917",
+      "textMuted": "#78716C",
+      "border": "#FDBA74",
+      "success": "#16A34A",
+      "warning": "#EAB308"
+    },
+    "dark": {
+      "background": "#1A0F0A",
+      "surface": "#2D1B12",
+      "primary": "#FB923C",
+      "secondary": "#FCA5A5",
+      "accent": "#FED7AA",
+      "text": "#FFF7ED",
+      "textMuted": "#D6D3D1",
+      "border": "#431407",
+      "success": "#4ADE80",
+      "warning": "#FDE047"
+    }
+  },
+  "typography": {
+    "headingFont": "Playfair Display",
+    "bodyFont": "Nunito",
+    "baseFontSize": "16px",
+    "lineHeight": "1.65"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "6px",
+    "md": "12px",
+    "lg": "20px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 3px rgba(0,0,0,0.06)",
+    "md": "0 4px 10px rgba(0,0,0,0.09)",
+    "lg": "0 12px 24px rgba(0,0,0,0.12)"
+  }
+}

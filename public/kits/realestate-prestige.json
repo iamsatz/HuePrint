@@ -1,0 +1,53 @@
+{
+  "id": "realestate-prestige",
+  "name": "Real Estate Prestige",
+  "industry": "Real Estate",
+  "description": "Sophisticated charcoals and warm gold accents for luxury real estate agencies, property listing platforms, and mortgage services.",
+  "palette": {
+    "light": {
+      "background": "#FAFAF9",
+      "surface": "#F5F5F4",
+      "primary": "#44403C",
+      "secondary": "#78716C",
+      "accent": "#B45309",
+      "text": "#1C1917",
+      "textMuted": "#78716C",
+      "border": "#D6D3D1",
+      "success": "#10B981",
+      "warning": "#F59E0B"
+    },
+    "dark": {
+      "background": "#0C0A09",
+      "surface": "#1C1917",
+      "primary": "#D4C5A9",
+      "secondary": "#A8A29E",
+      "accent": "#F59E0B",
+      "text": "#FAFAF9",
+      "textMuted": "#A8A29E",
+      "border": "#292524",
+      "success": "#34D399",
+      "warning": "#FCD34D"
+    }
+  },
+  "typography": {
+    "headingFont": "Playfair Display",
+    "bodyFont": "Lato",
+    "baseFontSize": "16px",
+    "lineHeight": "1.65"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "2px",
+    "md": "4px",
+    "lg": "8px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 3px rgba(0,0,0,0.08)",
+    "md": "0 4px 12px rgba(0,0,0,0.1)",
+    "lg": "0 16px 32px rgba(0,0,0,0.12)"
+  }
+}

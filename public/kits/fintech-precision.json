@@ -1,0 +1,53 @@
+{
+  "id": "fintech-precision",
+  "name": "Fintech Precision",
+  "industry": "Fintech",
+  "description": "Sharp indigo and data-green for fintech apps, crypto platforms, and trading dashboards. Precise, modern, and technically confident.",
+  "palette": {
+    "light": {
+      "background": "#FAFBFF",
+      "surface": "#EEF2FF",
+      "primary": "#4338CA",
+      "secondary": "#1E1B4B",
+      "accent": "#06B6D4",
+      "text": "#1E1B4B",
+      "textMuted": "#6B7280",
+      "border": "#C7D2FE",
+      "success": "#059669",
+      "warning": "#D97706"
+    },
+    "dark": {
+      "background": "#070711",
+      "surface": "#0F0E2A",
+      "primary": "#818CF8",
+      "secondary": "#A5B4FC",
+      "accent": "#22D3EE",
+      "text": "#EEF2FF",
+      "textMuted": "#9CA3AF",
+      "border": "#1E1B4B",
+      "success": "#34D399",
+      "warning": "#FCD34D"
+    }
+  },
+  "typography": {
+    "headingFont": "Inter",
+    "bodyFont": "Inter",
+    "baseFontSize": "15px",
+    "lineHeight": "1.6"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px rgba(67,56,202,0.08)",
+    "md": "0 4px 10px rgba(67,56,202,0.12)",
+    "lg": "0 12px 28px rgba(67,56,202,0.18)"
+  }
+}

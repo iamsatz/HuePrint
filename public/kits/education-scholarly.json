@@ -1,0 +1,53 @@
+{
+  "id": "education-scholarly",
+  "name": "Education Scholarly",
+  "industry": "Education",
+  "description": "A warm, inviting palette for learning platforms, e-learning tools, and academic institutions. Amber tones encourage focus and curiosity.",
+  "palette": {
+    "light": {
+      "background": "#FFFBEB",
+      "surface": "#FEF3C7",
+      "primary": "#D97706",
+      "secondary": "#92400E",
+      "accent": "#F59E0B",
+      "text": "#1C1917",
+      "textMuted": "#78716C",
+      "border": "#FDE68A",
+      "success": "#10B981",
+      "warning": "#EF4444"
+    },
+    "dark": {
+      "background": "#1C1917",
+      "surface": "#292524",
+      "primary": "#FBBF24",
+      "secondary": "#F59E0B",
+      "accent": "#FCD34D",
+      "text": "#FEF9C3",
+      "textMuted": "#A8A29E",
+      "border": "#44403C",
+      "success": "#34D399",
+      "warning": "#FCA5A5"
+    }
+  },
+  "typography": {
+    "headingFont": "Merriweather",
+    "bodyFont": "Source Sans Pro",
+    "baseFontSize": "16px",
+    "lineHeight": "1.75"
+  },
+  "spacing": {
+    "base": "4px",
+    "scale": 1.5
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px rgba(0,0,0,0.06)",
+    "md": "0 4px 8px rgba(0,0,0,0.08)",
+    "lg": "0 10px 20px rgba(0,0,0,0.1)"
+  }
+}
