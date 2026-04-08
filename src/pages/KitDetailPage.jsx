@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import ColorPalette from '../components/kit/ColorPalette'
 import ComponentGallery from '../components/kit/ComponentGallery'
 import TokenTable from '../components/kit/TokenTable'
+import ExportPanel from '../components/kit-detail/ExportPanel'
 import './KitDetailPage.css'
 
 function SectionHeader({ title, description }) {
@@ -119,6 +120,8 @@ export default function KitDetailPage() {
           />
           <TokenTable kit={kit} />
         </section>
+
+        <ExportPanel kit={kit} />
       </div>
     </div>
   )
