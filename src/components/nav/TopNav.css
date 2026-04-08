@@ -2,9 +2,10 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .top-nav-inner {
@@ -14,50 +15,69 @@
   height: 56px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 32px;
 }
 
 .top-nav-wordmark {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #1f2937;
+  letter-spacing: -0.03em;
   text-decoration: none;
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  flex-shrink: 0;
 }
 
 .top-nav-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
+  flex: 1;
 }
 
 .top-nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
-  border-radius: 8px;
+  padding: 5px 12px;
+  border-radius: 7px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--text-3);
   text-decoration: none;
   transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
 }
 
 .top-nav-link:hover {
-  color: #1f2937;
-  background: #f3f4f6;
+  color: var(--text-1);
+  background: var(--bg-muted);
 }
 
-.top-nav-link--active {
-  color: #7c3aed;
-  background: #f5f3ff;
+.top-nav-link.active {
+  color: var(--accent);
+  background: var(--accent-subtle);
 }
 
-.top-nav-link--active:hover {
-  color: #6d28d9;
-  background: #ede9fe;
+.top-nav-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.top-nav-theme-btn:hover {
+  color: var(--text-1);
+  background: var(--bg-muted);
+  border-color: var(--border-strong);
 }

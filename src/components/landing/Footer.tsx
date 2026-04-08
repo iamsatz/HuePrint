@@ -1,49 +1,44 @@
-import { ArrowRight, Palette } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import './landing.css'
 
 export default function Footer() {
   return (
     <>
-      {/* Pre-footer CTA */}
-      <div className="bg-violet-600">
-        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Stop starting with generic colors.
+      {/* CTA section */}
+      <section className="hp-cta-section">
+        <div className="hp-inner hp-cta-inner">
+          <h2 className="hp-cta-h2">
+            Stop starting from<br />a blank prompt.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-violet-100">
-            Pick a kit. Preview it. Paste the files into your AI tool.
-            Your brand, in every component it writes.
+          <p className="hp-cta-sub">
+            Every AI generation should start with your brand, not someone else's defaults.
+            Pick a kit. Export. Ship.
           </p>
-          <Link
-            to="/browse"
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-violet-700 shadow-lg transition hover:bg-violet-50 active:scale-95"
-          >
-            Browse Kits
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Footer bar */}
-      <footer className="border-t border-slate-800 bg-slate-950">
-        <div className="mx-auto max-w-7xl px-6 py-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-violet-600">
-                <Palette className="h-3.5 w-3.5 text-white" />
-              </div>
-              <span className="text-base font-bold text-white">HuePrint</span>
-            </div>
-
-            <p className="text-sm text-slate-500">
-              Design token kits for AI-builders.
-            </p>
-
-            <p className="text-sm text-slate-600">
-              &copy; {new Date().getFullYear()} HuePrint
-            </p>
+          <div className="hp-cta-btns">
+            <Link to="/browse" className="hp-btn hp-btn-primary">
+              Browse Kits
+              <ArrowRight size={16} />
+            </Link>
+            <Link to="/create" className="hp-btn hp-btn-ghost">
+              Import Your Colors
+            </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="hp-footer">
+        <div className="hp-inner hp-footer-inner">
+          <div className="hp-footer-brand">
+            <span className="hp-footer-wordmark">HuePrint</span>
+            <span className="hp-footer-tagline">Design tokens for AI builders.</span>
+          </div>
+          <div className="hp-footer-links">
+            <Link to="/browse" className="hp-footer-link">Browse Kits</Link>
+            <Link to="/create" className="hp-footer-link">Create Kit</Link>
+          </div>
+          <p className="hp-footer-copy">© {new Date().getFullYear()} HuePrint</p>
         </div>
       </footer>
     </>
