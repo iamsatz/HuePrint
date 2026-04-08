@@ -1,32 +1,14 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import coverImage from '@assets/CleanShot_2026-04-08_at_15.24.40@2x_1775642087389.png'
-import './LandingPage.css'
+import Hero from '../components/landing/Hero'
+import HowItWorks from '../components/landing/HowItWorks'
+import Footer from '../components/landing/Footer'
 
 export default function LandingPage() {
   return (
-    <div className="landing-wrapper">
-      <main className="app-card">
-        <section className="hero">
-          <div className="hero-copy">
-            <p className="eyebrow">HuePrint</p>
-            <h1>Design token kits for AI-builders</h1>
-            <p className="lede">
-              Browse curated brand palettes, preview on real UI components, and download
-              AI-ready token files. Paste into Claude, v0, or Cursor — get branded output
-              instantly.
-            </p>
-            <Link to="/browse" className="hero-cta">
-              Browse Kits
-            </Link>
-          </div>
-          <img
-            className="hero-image"
-            src={coverImage}
-            alt="HuePrint kit browser preview"
-          />
-        </section>
-      </main>
+    <div className="min-h-screen flex flex-col">
+      <Hero />
+      <HowItWorks />
+      <div className="flex-1" />
+      <Footer />
     </div>
   )
 }

@@ -1,16 +1,18 @@
-import Hero from './components/landing/Hero'
-import HowItWorks from './components/landing/HowItWorks'
-import Footer from './components/landing/Footer'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import TopNav from './components/nav/TopNav'
+import LandingPage from './pages/LandingPage'
+import BrowsePage from './pages/BrowsePage'
+import KitDetailPage from './pages/KitDetailPage'
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Hero />
-      <HowItWorks />
-      <div className="flex-1" />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <TopNav />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/browse" element={<BrowsePage />} />
+        <Route path="/kit/:id" element={<KitDetailPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
-
-export default App
