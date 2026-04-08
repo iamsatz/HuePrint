@@ -1,87 +1,277 @@
 .cp-root {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-}
-
-@media (max-width: 700px) {
-  .cp-root {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-}
-
-.cp-column-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  margin-bottom: 16px;
-}
-
-.cp-mode-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.cp-mode-dot--light {
-  background: #f8fafc;
-  border: 1.5px solid #cbd5e1;
-}
-
-.cp-mode-dot--dark {
-  background: #1e293b;
-  border: 1.5px solid #334155;
-}
-
-.cp-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-
-@media (max-width: 480px) {
-  .cp-grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-  }
-}
-
-.cp-swatch {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
+  background: #111111;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #222;
 }
 
-.cp-swatch-rect {
+/* === Header === */
+.cp-scales-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px 10px;
+  border-bottom: 1px solid #222;
+  flex-wrap: wrap;
+}
+
+.cp-scales-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  white-space: nowrap;
+}
+
+.cp-scales-hint {
+  font-size: 0.72rem;
+  color: #555;
+  flex: 1;
+}
+
+.cp-step-labels {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
   width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  margin-top: 4px;
+  padding: 0 24px;
+}
+
+/* The step label numbers header — pushed to the right of the label column */
+.cp-scales-header .cp-step-labels {
+  width: 100%;
+  padding: 4px 24px 0;
+}
+
+.cp-step-label-num {
+  font-size: 0.65rem;
+  color: #444;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* === Scale rows === */
+.cp-scales {
+  display: flex;
+  flex-direction: column;
+}
+
+.cp-scale-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.cp-scale-row:last-child {
+  border-bottom: none;
+}
+
+.cp-scale-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 20px;
+  border-right: 1px solid #1a1a1a;
+  min-width: 0;
+}
+
+.cp-scale-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.cp-scale-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-scale-hex {
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* === Step cells === */
+.cp-scale-steps {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  height: 60px;
+}
+
+.cp-step {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 5px;
+  cursor: default;
+  transition: filter 0.1s;
+}
+
+.cp-step:hover {
+  filter: brightness(1.12);
+  z-index: 2;
+}
+
+.cp-step-num {
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  user-select: none;
+}
+
+/* === Tooltip === */
+.cp-step-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 7px 10px;
+  white-space: nowrap;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+}
+
+.cp-step-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+}
+
+.cp-step-tooltip-label {
+  font-size: 0.6875rem;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.cp-step-tooltip-hex {
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.6875rem;
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+/* === Semantic section === */
+.cp-semantic-section {
+  padding: 20px 24px 24px;
+  border-top: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cp-semantic-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cp-semantic-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 80px;
   cursor: default;
 }
 
-.cp-swatch-label {
+.cp-semantic-rect {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: transform 0.1s;
+}
+
+.cp-semantic-swatch:hover .cp-semantic-rect {
+  transform: scaleY(1.04);
+}
+
+.cp-semantic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cp-semantic-role {
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #374151;
+  color: #888;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.cp-swatch-hex {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.625rem;
-  color: #9ca3af;
+.cp-semantic-hex {
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.6rem;
+  color: #555;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .cp-scale-row {
+    grid-template-columns: 100px 1fr;
+  }
+
+  .cp-scale-label {
+    padding: 10px 12px;
+  }
+
+  .cp-scale-name {
+    font-size: 0.75rem;
+  }
+
+  .cp-scale-steps {
+    height: 52px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cp-scale-row {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .cp-scale-label {
+    padding: 8px 10px;
+  }
+
+  .cp-scale-hex {
+    display: none;
+  }
+
+  .cp-scale-steps {
+    height: 44px;
+  }
+
+  .cp-step-num {
+    font-size: 0.55rem;
+  }
 }

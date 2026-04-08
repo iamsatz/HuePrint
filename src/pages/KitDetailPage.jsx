@@ -98,10 +98,10 @@ export default function KitDetailPage() {
 
         <section className="kd-section">
           <SectionHeader
-            title="Color Tokens"
-            description="All 10 palette roles for both light and dark mode. Each role is mapped to a semantic CSS variable."
+            title="Color Scales"
+            description="12-step perceptual scales for each color, generated from the kit's base tokens. Hover any step to see its semantic purpose."
           />
-          <ColorPalette kit={kit} />
+          <ColorPalette kit={kit} mode={mode} />
         </section>
 
         <section className="kd-section">
