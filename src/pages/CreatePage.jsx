@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { parseFigmaJson } from '../lib/parseFigmaJson'
+import { extractColorsFromImage, mapColorsToRoles } from '../lib/colorExtract'
 import {
   generateClaudePrompt,
   generateV0Config,
@@ -542,6 +543,170 @@ function ImportTab({ onImport }) {
   )
 }
 
+const ROLE_LABELS = {
+  background: 'Background',
+  surface: 'Surface',
+  primary: 'Primary',
+  secondary: 'Secondary',
+  text: 'Text',
+}
+
+function ExtractTab({ onUseColors }) {
+  const [dragOver, setDragOver] = useState(false)
+  const [thumbnail, setThumbnail] = useState(null)
+  const [extractedColors, setExtractedColors] = useState([])
+  const [roleMapping, setRoleMapping] = useState({})
+  const [selectedRole, setSelectedRole] = useState(null)
+  const [error, setError] = useState('')
+  const inputRef = useRef(null)
+
+  function processFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      setError('Please upload a PNG, JPG, or WebP image.')
+      return
+    }
+    setError('')
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const src = ev.target.result
+      setThumbnail(src)
+      const img = new Image()
+      img.onload = () => {
+        const colors = extractColorsFromImage(img, 12)
+        setExtractedColors(colors)
+        setRoleMapping(mapColorsToRoles(colors))
+        setSelectedRole(null)
+      }
+      img.src = src
+    }
+    reader.readAsDataURL(file)
+  }
+
+  function handleDrop(e) {
+    e.preventDefault()
+    setDragOver(false)
+    processFile(e.dataTransfer.files[0])
+  }
+
+  function handleFileChange(e) {
+    processFile(e.target.files[0])
+  }
+
+  function handleSwatchClick(hex, role) {
+    if (selectedRole) {
+      setRoleMapping((prev) => ({ ...prev, [selectedRole]: hex }))
+      setSelectedRole(null)
+    } else {
+      setSelectedRole(role)
+    }
+  }
+
+  function handleRoleMappingSwatchClick(role) {
+    setSelectedRole(selectedRole === role ? null : role)
+  }
+
+  function handleUse() {
+    onUseColors(roleMapping)
+  }
+
+  const hasColors = extractedColors.length > 0
+
+  return (
+    <div className="cp-extract-tab">
+      {!thumbnail ? (
+        <div
+          className={`cp-extract-dropzone ${dragOver ? 'cp-extract-dropzone--active' : ''}`}
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+          onClick={() => inputRef.current?.click()}
+        >
+          <div className="cp-extract-dropzone-icon">🖼</div>
+          <div className="cp-extract-dropzone-text">Drop a screenshot here or click to upload</div>
+          <div className="cp-extract-dropzone-hint">Accepts PNG, JPG, WebP</div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            className="cp-picker-hidden"
+            onChange={handleFileChange}
+            tabIndex={-1}
+          />
+        </div>
+      ) : (
+        <div className="cp-extract-uploaded">
+          <div className="cp-extract-thumb-wrap">
+            <img src={thumbnail} alt="Uploaded screenshot" className="cp-extract-thumb" />
+            <button
+              className="cp-extract-reupload"
+              onClick={() => { setThumbnail(null); setExtractedColors([]); setRoleMapping({}); setSelectedRole(null) }}
+              title="Upload a different image"
+            >
+              ✕ Change image
+            </button>
+          </div>
+        </div>
+      )}
+
+      {error && <p className="cp-parse-error">{error}</p>}
+
+      {hasColors && (
+        <>
+          <div className="cp-extract-section">
+            <div className="cp-extract-section-label">Extracted Colors</div>
+            <div className="cp-extract-swatches">
+              {extractedColors.map((hex) => (
+                <button
+                  key={hex}
+                  className={`cp-extract-swatch ${selectedRole ? 'cp-extract-swatch--selectable' : ''}`}
+                  style={{ background: hex }}
+                  title={selectedRole ? `Assign ${hex} to ${ROLE_LABELS[selectedRole]}` : hex}
+                  onClick={() => { if (selectedRole) { setRoleMapping((prev) => ({ ...prev, [selectedRole]: hex })); setSelectedRole(null) } }}
+                />
+              ))}
+            </div>
+            {selectedRole && (
+              <p className="cp-extract-pick-hint">Click a swatch above to assign it to <strong>{ROLE_LABELS[selectedRole]}</strong></p>
+            )}
+          </div>
+
+          <div className="cp-extract-section">
+            <div className="cp-extract-section-label">Role Mapping</div>
+            <div className="cp-extract-roles">
+              {Object.entries(ROLE_LABELS).map(([role, label]) => {
+                const hex = roleMapping[role]
+                const isActive = selectedRole === role
+                return (
+                  <div
+                    key={role}
+                    className={`cp-extract-role-row ${isActive ? 'cp-extract-role-row--active' : ''}`}
+                    onClick={() => handleRoleMappingSwatchClick(role)}
+                    title={`Click to reassign ${label}`}
+                  >
+                    <div
+                      className="cp-extract-role-swatch"
+                      style={hex ? { background: hex } : { background: '#e5e7eb' }}
+                    />
+                    <div className="cp-extract-role-info">
+                      <span className="cp-extract-role-label">{label}</span>
+                      <span className="cp-extract-role-hex">{hex || '—'}</span>
+                    </div>
+                    <span className="cp-extract-role-edit">✏</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <button className="cp-save-btn" type="button" onClick={handleUse}>
+            Use These Colors
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
 export default function CreatePage() {
   const [activeTab, setActiveTab] = useState('build')
   const [previewPage, setPreviewPage] = useState('components')
@@ -590,6 +755,13 @@ export default function CreatePage() {
             >
               Import JSON
             </button>
+            <button
+              className={`cp-tab ${activeTab === 'extract' ? 'cp-tab--active' : ''}`}
+              onClick={() => setActiveTab('extract')}
+              type="button"
+            >
+              Extract from Image
+            </button>
           </div>
 
           <div className="cp-left-body">
@@ -607,8 +779,10 @@ export default function CreatePage() {
                 </div>
                 <BuilderTab values={values} onChange={handleColorChange} />
               </>
-            ) : (
+            ) : activeTab === 'import' ? (
               <ImportTab onImport={handleImport} />
+            ) : (
+              <ExtractTab onUseColors={handleImport} />
             )}
           </div>
 

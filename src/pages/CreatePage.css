@@ -509,6 +509,214 @@
 }
 
 /* =========================================
+   Extract from Image tab
+   ========================================= */
+
+.cp-extract-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cp-extract-dropzone {
+  border: 2px dashed #e5e7eb;
+  border-radius: 14px;
+  padding: 36px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+}
+
+.cp-extract-dropzone:hover,
+.cp-extract-dropzone--active {
+  border-color: #8B5CF6;
+  background: #faf5ff;
+}
+
+.cp-extract-dropzone-icon {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.cp-extract-dropzone-text {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.cp-extract-dropzone-hint {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+}
+
+.cp-extract-uploaded {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-extract-thumb-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-extract-thumb {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1.5px solid #e5e7eb;
+  opacity: 0.75;
+  display: block;
+}
+
+.cp-extract-reupload {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.cp-extract-reupload:hover {
+  color: #374151;
+}
+
+.cp-extract-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-extract-section-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.cp-extract-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cp-extract-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: default;
+  outline: none;
+  transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.cp-extract-swatch--selectable {
+  cursor: pointer;
+}
+
+.cp-extract-swatch--selectable:hover {
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-color: #8B5CF6;
+}
+
+.cp-extract-pick-hint {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.cp-extract-pick-hint strong {
+  color: #7c3aed;
+}
+
+.cp-extract-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-extract-role-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.cp-extract-role-row:hover {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+}
+
+.cp-extract-role-row--active {
+  border-color: #8B5CF6;
+  background: #faf5ff;
+}
+
+.cp-extract-role-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.cp-extract-role-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cp-extract-role-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cp-extract-role-hex {
+  font-size: 0.75rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: #9ca3af;
+}
+
+.cp-extract-role-edit {
+  font-size: 0.75rem;
+  color: #d1d5db;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.cp-extract-role-row:hover .cp-extract-role-edit,
+.cp-extract-role-row--active .cp-extract-role-edit {
+  color: #8B5CF6;
+}
+
+/* =========================================
    Right panel (60%) — Live Preview
    ========================================= */
 
