@@ -28,7 +28,7 @@
   transition: color 0.15s;
 }
 
-.kd-back:hover { color: #7c3aed; }
+.kd-back:hover { color: #8B5CF6; }
 
 /* ─── Hero (centered) ────────────────────────────────── */
 .kd-hero {
@@ -53,9 +53,9 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(124, 58, 237, 0.1);
-  color: #7c3aed;
-  border: 1px solid rgba(124, 58, 237, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .kd-kit-name {
@@ -210,8 +210,8 @@
 .kd-loading-spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid rgba(124, 58, 237, 0.15);
-  border-top-color: #7c3aed;
+  border: 3px solid rgba(139, 92, 246, 0.15);
+  border-top-color: #8B5CF6;
   border-radius: 50%;
   animation: kd-spin 0.7s linear infinite;
 }
@@ -245,10 +245,10 @@
 
 .kd-not-found code {
   font-family: monospace;
-  background: rgba(124, 58, 237, 0.08);
+  background: rgba(139, 92, 246, 0.08);
   padding: 2px 6px;
   border-radius: 4px;
-  color: #7c3aed;
+  color: #8B5CF6;
 }
 
 .kd-btn {
@@ -264,7 +264,7 @@
   border: none;
 }
 
-.kd-btn--primary { background: #7c3aed; color: #ffffff; }
+.kd-btn--primary { background: #8B5CF6; color: #ffffff; }
 .kd-btn--primary:hover { filter: brightness(0.9); }
 
 /* ─── Responsive ─────────────────────────────────────── */
@@ -309,7 +309,7 @@
   letter-spacing: 0.08em;
   border-radius: 100px;
   background: #f5f3ff;
-  color: #7c3aed;
+  color: #8B5CF6;
   border: 1px solid #e9d5ff;
 }
 
@@ -404,7 +404,7 @@
 }
 
 .kit-export-desc a {
-  color: #7c3aed;
+  color: #8B5CF6;
   font-weight: 600;
   text-decoration: none;
 }

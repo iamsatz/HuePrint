@@ -4,7 +4,9 @@ function getInitialTheme() {
   if (typeof window === 'undefined') return 'light'
   const stored = localStorage.getItem('hp-theme')
   if (stored === 'dark' || stored === 'light') return stored
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
+  if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light'
+  return 'dark'
 }
 
 export function useTheme() {

@@ -23,7 +23,7 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   text-decoration: none;
-  background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -83,7 +83,7 @@
 }
 
 .top-nav-link--cta {
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
   color: #fff !important;
   padding: 6px 16px;
 }
@@ -91,11 +91,11 @@
 .top-nav-link--cta:hover {
   opacity: 0.88;
   color: #fff;
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
 }
 
 .top-nav-link--cta.top-nav-link--active {
   opacity: 0.88;
   color: #fff;
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
 }
