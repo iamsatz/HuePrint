@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import TopNav from './components/nav/TopNav'
 import LandingPage from './pages/LandingPage'

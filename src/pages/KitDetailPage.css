@@ -274,3 +274,141 @@
   .kd-color-inputs { gap: 8px; }
   .kd-color-field { min-width: 130px; }
 }
+
+/* === Custom kit detail === */
+
+.kit-detail-custom {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 36px;
+}
+
+.kit-detail-custom-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.kit-detail-custom-name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.kit-detail-custom-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 100px;
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1px solid #e9d5ff;
+}
+
+.kit-detail-custom-desc {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+
+.kit-detail-palettes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 600px) {
+  .kit-detail-palettes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kit-palette-block {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.kit-palette-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.kit-palette-swatches {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kit-palette-swatch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kit-palette-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.kit-palette-role {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  min-width: 80px;
+}
+
+.kit-palette-hex {
+  font-size: 0.8125rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: #9ca3af;
+}
+
+/* === Custom kit export section === */
+
+.kit-detail-export {
+  border-top: 1.5px solid #f3f4f6;
+  padding-top: 28px;
+}
+
+.kit-export-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.kit-export-desc {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.kit-export-desc a {
+  color: #7c3aed;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.kit-export-desc a:hover {
+  text-decoration: underline;
+}

@@ -4,6 +4,7 @@ import ColorPalette from '../components/kit/ColorPalette'
 import ComponentGallery from '../components/kit/ComponentGallery'
 import TokenTable from '../components/kit/TokenTable'
 import ExportPanel from '../components/kit-detail/ExportPanel'
+import { useCustomKit } from '../context/CustomKitContext'
 import './KitDetailPage.css'
 
 function ColorInput({ label, hex }) {
@@ -24,14 +25,90 @@ function ColorInput({ label, hex }) {
   )
 }
 
+function CustomKitDetail({ kit }) {
+  const { palette } = kit
+  const light = palette?.light ?? {}
+  const dark = palette?.dark ?? {}
+
+  const roles = [
+    'background', 'surface', 'primary', 'secondary', 'accent',
+    'text', 'textMuted', 'border', 'success', 'warning',
+  ]
+
+  return (
+    <div className="kit-detail-custom">
+      <div className="kit-detail-custom-header">
+        <h1 className="kit-detail-custom-name">{kit.name}</h1>
+        <span className="kit-detail-custom-badge">{kit.industry}</span>
+      </div>
+      <p className="kit-detail-custom-desc">{kit.description}</p>
+
+      <div className="kit-detail-palettes">
+        <div className="kit-palette-block">
+          <h2 className="kit-palette-title">Light Mode</h2>
+          <div className="kit-palette-swatches">
+            {roles.map((role) =>
+              light[role] ? (
+                <div key={role} className="kit-palette-swatch">
+                  <div
+                    className="kit-palette-dot"
+                    style={{ background: light[role] }}
+                    title={light[role]}
+                  />
+                  <span className="kit-palette-role">{role}</span>
+                  <span className="kit-palette-hex">{light[role]}</span>
+                </div>
+              ) : null
+            )}
+          </div>
+        </div>
+
+        <div className="kit-palette-block">
+          <h2 className="kit-palette-title">Dark Mode</h2>
+          <div className="kit-palette-swatches">
+            {roles.map((role) =>
+              dark[role] ? (
+                <div key={role} className="kit-palette-swatch">
+                  <div
+                    className="kit-palette-dot"
+                    style={{ background: dark[role] }}
+                    title={dark[role]}
+                  />
+                  <span className="kit-palette-role">{role}</span>
+                  <span className="kit-palette-hex">{dark[role]}</span>
+                </div>
+              ) : null
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="kit-detail-export">
+        <h2 className="kit-export-title">Export Tokens</h2>
+        <p className="kit-export-desc">
+          Full token export and component previews are coming soon. Your custom kit is saved in this
+          session — you can always go back to <Link to="/create">Edit Kit</Link> to make changes.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function KitDetailPage() {
   const { id } = useParams()
+  const { customKit } = useCustomKit()
   const [kit, setKit] = useState(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [mode, setMode] = useState('light')
 
+  const isCustom = id === 'custom'
+
   useEffect(() => {
+    if (isCustom) {
+      setLoading(false)
+      return
+    }
     setLoading(true)
     setNotFound(false)
     fetch(`/kits/${id}.json`)
@@ -47,7 +124,30 @@ export default function KitDetailPage() {
         setNotFound(true)
         setLoading(false)
       })
-  }, [id])
+  }, [id, isCustom])
+
+  if (isCustom) {
+    return (
+      <div className="kd-page">
+        <div className="kd-inner">
+          <Link to="/create" className="kd-back">← Back to create</Link>
+          {customKit ? (
+            <CustomKitDetail kit={customKit} />
+          ) : (
+            <div className="kd-not-found">
+              <span className="kd-not-found-icon">🎨</span>
+              <h1>No Custom Kit Found</h1>
+              <p>
+                It looks like your custom kit session has expired or was never created.
+                Head back to the create page to build your kit.
+              </p>
+              <Link to="/create" className="kd-btn kd-btn--primary">Create a Kit →</Link>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (

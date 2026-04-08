@@ -81,3 +81,21 @@
   background: var(--bg-muted);
   border-color: var(--border-strong);
 }
+
+.top-nav-link--cta {
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: #fff !important;
+  padding: 6px 16px;
+}
+
+.top-nav-link--cta:hover {
+  opacity: 0.88;
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+}
+
+.top-nav-link--cta.top-nav-link--active {
+  opacity: 0.88;
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+}

@@ -21,7 +21,7 @@ export default function TopNav() {
           </NavLink>
           <NavLink
             to="/create"
-            className={({ isActive }) => 'top-nav-link' + (isActive ? ' active' : '')}
+            className={({ isActive }) => 'top-nav-link top-nav-link--cta' + (isActive ? ' active' : '')}
           >
             Create Kit
           </NavLink>
