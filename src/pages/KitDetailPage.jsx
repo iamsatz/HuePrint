@@ -194,20 +194,32 @@ export default function KitDetailPage() {
             <p className="kd-kit-desc">{kit.description}</p>
           </div>
 
-          {/* Light / Dark pill toggle */}
-          <div className="kd-mode-toggle" role="group" aria-label="Color mode">
-            <button
-              className={`kd-toggle-btn${mode === 'light' ? ' kd-toggle-btn--active' : ''}`}
-              onClick={() => setMode('light')}
+          {/* Light / Dark pill toggle + Export shortcut */}
+          <div className="kd-hero-actions">
+            <div className="kd-mode-toggle" role="group" aria-label="Color mode">
+              <button
+                className={`kd-toggle-btn${mode === 'light' ? ' kd-toggle-btn--active' : ''}`}
+                onClick={() => setMode('light')}
+              >
+                ☀ Light
+              </button>
+              <button
+                className={`kd-toggle-btn${mode === 'dark' ? ' kd-toggle-btn--active' : ''}`}
+                onClick={() => setMode('dark')}
+              >
+                ◑ Dark
+              </button>
+            </div>
+            <a
+              className="kd-export-shortcut"
+              href="#export-panel"
+              onClick={(e) => {
+                e.preventDefault()
+                document.getElementById('export-panel')?.scrollIntoView({ behavior: 'smooth' })
+              }}
             >
-              ☀ Light
-            </button>
-            <button
-              className={`kd-toggle-btn${mode === 'dark' ? ' kd-toggle-btn--active' : ''}`}
-              onClick={() => setMode('dark')}
-            >
-              ◑ Dark
-            </button>
+              Export for AI →
+            </a>
           </div>
         </div>
 

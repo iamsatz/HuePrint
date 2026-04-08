@@ -75,6 +75,37 @@
   margin: 0 auto;
 }
 
+/* ─── Hero actions row (mode toggle + export shortcut) ── */
+.kd-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kd-export-shortcut {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #8B5CF6;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+  white-space: nowrap;
+}
+
+.kd-export-shortcut:hover {
+  filter: brightness(0.9);
+  box-shadow: 0 3px 12px rgba(139, 92, 246, 0.45);
+}
+
 /* ─── Mode toggle — pill style like Radix ────────────── */
 .kd-mode-toggle {
   display: inline-flex;
