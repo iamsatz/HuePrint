@@ -6,11 +6,20 @@ import TokenTable from '../components/kit/TokenTable'
 import ExportPanel from '../components/kit-detail/ExportPanel'
 import './KitDetailPage.css'
 
-function SectionHeader({ title, description }) {
+function ColorInput({ label, hex }) {
+  const display = hex ? hex.replace('#', '').toUpperCase() : ''
   return (
-    <div className="kd-section-header">
-      <h2 className="kd-section-title">{title}</h2>
-      {description && <p className="kd-section-desc">{description}</p>}
+    <div className="kd-color-input-group">
+      <span className="kd-color-input-label">{label}</span>
+      <div className="kd-color-field">
+        <div className="kd-color-swatch" style={{ background: hex || '#ccc' }} />
+        <input
+          className="kd-color-hex"
+          value={display}
+          readOnly
+          spellCheck={false}
+        />
+      </div>
     </div>
   )
 }
@@ -44,7 +53,7 @@ export default function KitDetailPage() {
     return (
       <div className="kd-page">
         <div className="kd-inner">
-          <Link to="/browse" className="kd-back">← Back to kits</Link>
+          <Link to="/browse" className="kd-back">← Browse kits</Link>
           <div className="kd-loading">
             <div className="kd-loading-spinner" />
             <p>Loading kit…</p>
@@ -58,7 +67,7 @@ export default function KitDetailPage() {
     return (
       <div className="kd-page">
         <div className="kd-inner">
-          <Link to="/browse" className="kd-back">← Back to kits</Link>
+          <Link to="/browse" className="kd-back">← Browse kits</Link>
           <div className="kd-not-found">
             <span className="kd-not-found-icon">🔍</span>
             <h1>Kit not found</h1>
@@ -70,17 +79,22 @@ export default function KitDetailPage() {
     )
   }
 
+  const palette = kit.palette?.[mode] || {}
+
   return (
     <div className="kd-page">
       <div className="kd-inner">
-        <Link to="/browse" className="kd-back">← Back to kits</Link>
+        <Link to="/browse" className="kd-back">← Browse kits</Link>
 
+        {/* Centered header */}
         <div className="kd-hero">
           <div className="kd-hero-text">
             <div className="kd-industry-badge">{kit.industry}</div>
             <h1 className="kd-kit-name">{kit.name}</h1>
             <p className="kd-kit-desc">{kit.description}</p>
           </div>
+
+          {/* Light / Dark pill toggle */}
           <div className="kd-mode-toggle" role="group" aria-label="Color mode">
             <button
               className={`kd-toggle-btn${mode === 'light' ? ' kd-toggle-btn--active' : ''}`}
@@ -97,27 +111,35 @@ export default function KitDetailPage() {
           </div>
         </div>
 
+        {/* Color swatch inputs — like Radix Colors */}
+        <div className="kd-color-inputs">
+          <ColorInput label="Primary" hex={palette.primary} />
+          <ColorInput label="Secondary" hex={palette.secondary} />
+          <ColorInput label="Accent" hex={palette.accent} />
+          <ColorInput label="Background" hex={palette.background} />
+          <ColorInput label="Surface" hex={palette.surface} />
+        </div>
+
+        {/* 12-step color scales */}
         <section className="kd-section">
-          <SectionHeader
-            title="Color Scales"
-            description="12-step perceptual scales for each color, generated from the kit's base tokens. Hover any step to see its semantic purpose."
-          />
           <ColorPalette kit={kit} mode={mode} />
         </section>
 
+        {/* Component gallery */}
         <section className="kd-section">
-          <SectionHeader
-            title="Component Gallery"
-            description="Live preview of UI components rendered with this kit's tokens. Toggle light/dark above to see the mode switch in real time."
-          />
+          <div className="kd-section-header">
+            <h2 className="kd-section-title">Component Preview</h2>
+            <p className="kd-section-desc">Live UI components rendered with this kit's tokens. Toggle light/dark to see both modes.</p>
+          </div>
           <ComponentGallery kit={kit} mode={mode} />
         </section>
 
+        {/* Token table */}
         <section className="kd-section">
-          <SectionHeader
-            title="Design Tokens"
-            description="Raw token values for typography, spacing, border radius, and shadows."
-          />
+          <div className="kd-section-header">
+            <h2 className="kd-section-title">Design Tokens</h2>
+            <p className="kd-section-desc">Raw token values for typography, spacing, border radius, and shadows.</p>
+          </div>
           <TokenTable kit={kit} />
         </section>
 
