@@ -1,149 +1,115 @@
+/* ============================================================
+   ColorPalette — Radix Colors-style 12-step horizontal scale
+   Grid: [label 100px] [12 equal step columns]
+   ============================================================ */
+
 .cp-root {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: #111111;
-  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 100px repeat(12, 1fr);
+  background: #ffffff;
+  border: 1px solid #e8eaed;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #222;
 }
 
-/* === Header === */
-.cp-scales-header {
+/* ── Row shared helpers ── */
+.cp-row-label-spacer {
+  grid-column: 1;
+}
+
+/* ── Category group header row ── */
+.cp-categories-row {
+  display: contents;
+}
+
+.cp-categories-row .cp-row-label-spacer {
+  padding: 14px 12px 8px;
+}
+
+.cp-category {
+  padding: 14px 0 8px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  border-left: 1px solid #e8eaed;
+}
+
+.cp-category:first-of-type {
+  border-left: none;
+}
+
+/* ── Divider row ── */
+.cp-divider-row {
+  display: contents;
+}
+
+.cp-divider-row .cp-row-label-spacer {
+  border-top: 1px solid #e8eaed;
+}
+
+.cp-divider-line {
+  grid-column: 2 / 14;
+  border-top: 1px solid #e8eaed;
+}
+
+/* ── Step numbers row ── */
+.cp-numbers-row {
+  display: contents;
+}
+
+.cp-numbers-row .cp-row-label-spacer {
+  padding: 6px 12px 8px;
+}
+
+.cp-step-num {
+  padding: 6px 0 8px;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* ── Color scale rows ── */
+.cp-row {
+  display: contents;
+}
+
+.cp-row-label {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 24px 10px;
-  border-bottom: 1px solid #222;
-  flex-wrap: wrap;
-}
-
-.cp-scales-title {
+  padding: 0 12px;
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #888;
+  font-weight: 500;
+  color: #6b7280;
+  background: #fafafa;
+  border-top: 1px solid #f3f4f6;
+  min-height: 56px;
   white-space: nowrap;
 }
 
-.cp-scales-hint {
-  font-size: 0.72rem;
-  color: #555;
-  flex: 1;
-}
-
-.cp-step-labels {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  width: 100%;
-  margin-top: 4px;
-  padding: 0 24px;
-}
-
-/* The step label numbers header — pushed to the right of the label column */
-.cp-scales-header .cp-step-labels {
-  width: 100%;
-  padding: 4px 24px 0;
-}
-
-.cp-step-label-num {
-  font-size: 0.65rem;
-  color: #444;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-
-/* === Scale rows === */
-.cp-scales {
-  display: flex;
-  flex-direction: column;
-}
-
-.cp-scale-row {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  border-bottom: 1px solid #1a1a1a;
-}
-
-.cp-scale-row:last-child {
-  border-bottom: none;
-}
-
-.cp-scale-label {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  padding: 14px 20px;
-  border-right: 1px solid #1a1a1a;
-  min-width: 0;
-}
-
-.cp-scale-swatch {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  flex-shrink: 0;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.cp-scale-name {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: #e0e0e0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp-scale-hex {
-  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-  font-size: 0.65rem;
-  color: #555;
-  white-space: nowrap;
-}
-
-/* === Step cells === */
-.cp-scale-steps {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  height: 60px;
-}
-
-.cp-step {
+.cp-cell {
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 5px;
+  min-height: 56px;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
   cursor: default;
   transition: filter 0.1s;
 }
 
-.cp-step:hover {
-  filter: brightness(1.12);
+.cp-cell:hover {
+  filter: brightness(0.94);
   z-index: 2;
 }
 
-.cp-step-num {
-  font-size: 0.625rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  user-select: none;
-}
-
-/* === Tooltip === */
-.cp-step-tooltip {
+/* ── Tooltip ── */
+.cp-cell-tooltip {
   position: absolute;
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #111827;
   border-radius: 8px;
   padding: 7px 10px;
   white-space: nowrap;
@@ -152,126 +118,81 @@
   flex-direction: column;
   gap: 2px;
   pointer-events: none;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.cp-step-tooltip::after {
+.cp-cell-tooltip::after {
   content: '';
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: #333;
+  border-top-color: #111827;
 }
 
-.cp-step-tooltip-label {
+.cp-cell-tooltip-label {
   font-size: 0.6875rem;
-  color: #aaa;
-  font-weight: 500;
+  color: #9ca3af;
+  font-weight: 400;
 }
 
-.cp-step-tooltip-hex {
+.cp-cell-tooltip-hex {
   font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
   font-size: 0.6875rem;
-  color: #e0e0e0;
+  color: #f3f4f6;
   font-weight: 600;
 }
 
-/* === Semantic section === */
-.cp-semantic-section {
-  padding: 20px 24px 24px;
-  border-top: 1px solid #222;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.cp-semantic-grid {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.cp-semantic-swatch {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  min-width: 80px;
-  cursor: default;
-}
-
-.cp-semantic-rect {
-  height: 40px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.07);
-  transition: transform 0.1s;
-}
-
-.cp-semantic-swatch:hover .cp-semantic-rect {
-  transform: scaleY(1.04);
-}
-
-.cp-semantic-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.cp-semantic-role {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: #888;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp-semantic-hex {
-  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-  font-size: 0.6rem;
-  color: #555;
-  white-space: nowrap;
-}
-
-/* === Responsive === */
-@media (max-width: 768px) {
-  .cp-scale-row {
-    grid-template-columns: 100px 1fr;
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .cp-root {
+    grid-template-columns: 76px repeat(12, 1fr);
+    border-radius: 10px;
   }
 
-  .cp-scale-label {
-    padding: 10px 12px;
+  .cp-category {
+    font-size: 0.65rem;
+    padding: 10px 0 6px;
   }
 
-  .cp-scale-name {
-    font-size: 0.75rem;
+  .cp-step-num {
+    font-size: 0.6rem;
   }
 
-  .cp-scale-steps {
-    height: 52px;
+  .cp-row-label {
+    font-size: 0.6875rem;
+    padding: 0 8px;
+    min-height: 48px;
+  }
+
+  .cp-cell {
+    min-height: 48px;
   }
 }
 
-@media (max-width: 520px) {
-  .cp-scale-row {
-    grid-template-columns: 80px 1fr;
+@media (max-width: 560px) {
+  .cp-root {
+    grid-template-columns: 0px repeat(12, 1fr);
+    border-radius: 8px;
   }
 
-  .cp-scale-label {
-    padding: 8px 10px;
-  }
-
-  .cp-scale-hex {
+  .cp-row-label-spacer,
+  .cp-row-label {
     display: none;
   }
 
-  .cp-scale-steps {
-    height: 44px;
+  .cp-category {
+    font-size: 0.55rem;
+    padding: 8px 2px 4px;
   }
 
   .cp-step-num {
     font-size: 0.55rem;
+    padding: 4px 0 6px;
+  }
+
+  .cp-cell {
+    min-height: 40px;
   }
 }

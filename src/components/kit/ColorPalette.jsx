@@ -2,6 +2,14 @@ import React, { useState } from 'react'
 import { generateRadixScale } from '../../lib/generateRadixScale'
 import './ColorPalette.css'
 
+const CATEGORIES = [
+  { label: 'Backgrounds', steps: [1, 2] },
+  { label: 'Interactive components', steps: [3, 4, 5] },
+  { label: 'Borders and separators', steps: [6, 7, 8] },
+  { label: 'Solid colors', steps: [9, 10] },
+  { label: 'Accessible text', steps: [11, 12] },
+]
+
 const SCALE_COLORS = [
   { key: 'primary', label: 'Primary' },
   { key: 'secondary', label: 'Secondary' },
@@ -10,77 +18,35 @@ const SCALE_COLORS = [
   { key: 'warning', label: 'Warning' },
 ]
 
-const SEMANTIC_ROLES = [
-  { key: 'background', label: 'Background' },
-  { key: 'surface', label: 'Surface' },
-  { key: 'text', label: 'Text' },
-  { key: 'textMuted', label: 'Text Muted' },
-  { key: 'border', label: 'Border' },
-]
-
-function ScaleStep({ step, isLast }) {
-  const [hovered, setHovered] = useState(false)
-
+function StepCell({ step }) {
+  const [tooltip, setTooltip] = useState(false)
   return (
     <div
-      className="cp-step"
+      className="cp-cell"
       style={{ background: step.hex }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      title={`Step ${step.step}: ${step.label} — ${step.hex}`}
+      onMouseEnter={() => setTooltip(true)}
+      onMouseLeave={() => setTooltip(false)}
     >
-      {hovered && (
-        <div className="cp-step-tooltip">
-          <span className="cp-step-tooltip-label">{step.label}</span>
-          <span className="cp-step-tooltip-hex">{step.hex}</span>
+      {tooltip && (
+        <div className="cp-cell-tooltip">
+          <span className="cp-cell-tooltip-label">{step.label}</span>
+          <span className="cp-cell-tooltip-hex">{step.hex}</span>
         </div>
       )}
-      <span
-        className="cp-step-num"
-        style={{ color: step.isLight ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.5)' }}
-      >
-        {step.step}
-      </span>
     </div>
   )
 }
 
-function ColorScale({ colorKey, label, palette, mode }) {
+function ColorRow({ colorKey, label, palette, mode }) {
   const hex = palette[colorKey]
   if (!hex) return null
   const steps = generateRadixScale(hex, mode)
-
   return (
-    <div className="cp-scale-row">
-      <div className="cp-scale-label">
-        <span className="cp-scale-swatch" style={{ background: hex }} />
-        <span className="cp-scale-name">{label}</span>
-        <span className="cp-scale-hex">{hex}</span>
-      </div>
-      <div className="cp-scale-steps">
-        {steps.map((step) => (
-          <ScaleStep key={step.step} step={step} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SemanticSwatch({ colorKey, label, palette }) {
-  const hex = palette[colorKey]
-  const [hovered, setHovered] = useState(false)
-
-  return (
-    <div
-      className="cp-semantic-swatch"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="cp-semantic-rect" style={{ background: hex }} title={hex} />
-      <div className="cp-semantic-info">
-        <span className="cp-semantic-role">{label}</span>
-        <span className="cp-semantic-hex">{hex}</span>
-      </div>
+    <div className="cp-row">
+      <div className="cp-row-label">{label}</div>
+      {steps.map((step) => (
+        <StepCell key={step.step} step={step} />
+      ))}
     </div>
   )
 }
@@ -91,36 +57,44 @@ export default function ColorPalette({ kit, mode = 'light' }) {
 
   return (
     <div className="cp-root">
-      <div className="cp-scales-header">
-        <span className="cp-scales-title">Color Scales</span>
-        <span className="cp-scales-hint">Hover any step to see its semantic purpose and hex value</span>
-        <div className="cp-step-labels">
-          {Array.from({ length: 12 }, (_, i) => (
-            <span key={i + 1} className="cp-step-label-num">{i + 1}</span>
-          ))}
-        </div>
-      </div>
-
-      <div className="cp-scales">
-        {SCALE_COLORS.map(({ key, label }) => (
-          <ColorScale
-            key={key}
-            colorKey={key}
-            label={label}
-            palette={palette}
-            mode={mode}
-          />
+      {/* Category group labels */}
+      <div className="cp-categories-row">
+        <div className="cp-row-label-spacer" />
+        {CATEGORIES.map((cat) => (
+          <div
+            key={cat.label}
+            className="cp-category"
+            style={{ gridColumn: `span ${cat.steps.length}` }}
+          >
+            {cat.label}
+          </div>
         ))}
       </div>
 
-      <div className="cp-semantic-section">
-        <span className="cp-scales-title">Semantic Roles</span>
-        <div className="cp-semantic-grid">
-          {SEMANTIC_ROLES.map(({ key, label }) => (
-            <SemanticSwatch key={key} colorKey={key} label={label} palette={palette} />
-          ))}
-        </div>
+      {/* Divider line under categories */}
+      <div className="cp-divider-row">
+        <div className="cp-row-label-spacer" />
+        <div className="cp-divider-line" />
       </div>
+
+      {/* Step numbers */}
+      <div className="cp-numbers-row">
+        <div className="cp-row-label-spacer" />
+        {Array.from({ length: 12 }, (_, i) => (
+          <div key={i + 1} className="cp-step-num">{i + 1}</div>
+        ))}
+      </div>
+
+      {/* Color scale rows */}
+      {SCALE_COLORS.map(({ key, label }) => (
+        <ColorRow
+          key={key}
+          colorKey={key}
+          label={label}
+          palette={palette}
+          mode={mode}
+        />
+      ))}
     </div>
   )
 }
