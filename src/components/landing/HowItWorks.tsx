@@ -33,7 +33,7 @@ const EXPORTS = [
     file: 'v0',
     label: 'tailwind.config.js',
     desc: 'Your brand palette as a Tailwind color extension, ready to drop into any shadcn/ui or Tailwind project. Zero configuration needed.',
-    color: '#000000',
+    color: '#e5e7eb',
   },
   {
     file: 'Cursor',

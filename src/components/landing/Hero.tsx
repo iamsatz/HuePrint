@@ -14,9 +14,8 @@ const KITS = [
 
 export default function Hero() {
   return (
+    <div className="hp-hero-wrap">
     <section className="hp-hero">
-      {/* Noise texture overlay */}
-      <div className="hp-hero-noise" />
 
       <div className="hp-hero-inner">
         {/* Badge */}
@@ -91,5 +90,6 @@ export default function Hero() {
         </div>
       </div>
     </section>
+    </div>
   )
 }
