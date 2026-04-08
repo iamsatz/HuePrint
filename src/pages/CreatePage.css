@@ -2368,7 +2368,7 @@
   height: 40px;
   border-radius: 10px;
   background: var(--hp-primary, #7c3aed);
-  color: #fff;
+  color: var(--hp-background, #fff);
   font-size: 1rem;
   font-weight: 800;
   display: flex;
@@ -2485,6 +2485,508 @@
 }
 
 /* =========================================
+   Error 404 Preview
+   ========================================= */
+
+.lp-404-body {
+  padding: 36px 24px 24px;
+  background: var(--hp-background, #fff);
+  text-align: center;
+}
+
+.lp-404-illustration {
+  margin-bottom: 16px;
+}
+
+.lp-404-number {
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--hp-primary, #7c3aed);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  opacity: 0.85;
+}
+
+.lp-404-heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--hp-text, #111827);
+  margin: 0 0 12px;
+}
+
+.lp-404-sub {
+  font-size: 0.9375rem;
+  color: var(--hp-textMuted, #6b7280);
+  max-width: 380px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.lp-404-links {
+  display: inline-block;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.lp-404-link-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--hp-textMuted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 10px;
+}
+
+.lp-404-link-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lp-404-link-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--hp-surface, #f9fafb);
+  border: 1.5px solid var(--hp-border, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  color: var(--hp-text, #374151);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.lp-404-link-icon {
+  font-size: 1rem;
+}
+
+.lp-404-support-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.lp-404-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--hp-surface, #f9fafb);
+  border-top: 1px solid var(--hp-border, #e5e7eb);
+}
+
+/* =========================================
+   Waitlist Preview
+   ========================================= */
+
+.lp-waitlist-hero {
+  padding: 36px 24px 24px;
+  background: var(--hp-primary, #7c3aed);
+  text-align: center;
+}
+
+.lp-waitlist-hero .lp-app-hero-eyebrow {
+  background: color-mix(in srgb, var(--hp-background, #fff) 20%, transparent);
+  color: var(--hp-background, #fff);
+}
+
+.lp-waitlist-hero .lp-app-hero-h1 {
+  color: var(--hp-background, #fff);
+}
+
+.lp-waitlist-hero .lp-app-hero-sub {
+  color: color-mix(in srgb, var(--hp-background, #fff) 85%, transparent);
+  margin: 0;
+}
+
+.lp-waitlist-main {
+  padding: 24px;
+  background: var(--hp-background, #fff);
+}
+
+.lp-waitlist-social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.lp-waitlist-avatars {
+  display: flex;
+}
+
+.lp-waitlist-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--hp-background, #fff);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -8px;
+  border: 2px solid var(--hp-background, #fff);
+  flex-shrink: 0;
+}
+
+.lp-waitlist-avatars .lp-waitlist-avatar:first-child {
+  margin-left: 0;
+}
+
+.lp-waitlist-features {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  background: var(--hp-surface, #f9fafb);
+  border: 1.5px solid var(--hp-border, #e5e7eb);
+  border-radius: 12px;
+}
+
+.lp-waitlist-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.lp-waitlist-feature-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* =========================================
+   Sign-In Split Layout
+   ========================================= */
+
+.lp-signin-split {
+  display: flex;
+  min-height: 480px;
+}
+
+.lp-signin-brand-panel {
+  width: 45%;
+  flex-shrink: 0;
+  background: var(--hp-primary, #7c3aed);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.lp-signin-brand-logo {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--hp-background, #fff);
+  margin-bottom: 8px;
+}
+
+.lp-signin-brand-headline {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--hp-background, #fff);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.lp-signin-brand-sub {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--hp-background, #fff) 80%, transparent);
+  line-height: 1.6;
+  margin: 4px 0 0;
+}
+
+.lp-signin-brand-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 16px;
+  padding-top: 20px;
+  border-top: 1px solid color-mix(in srgb, var(--hp-background, #fff) 20%, transparent);
+}
+
+.lp-signin-brand-stat {
+  text-align: center;
+}
+
+.lp-signin-activity-divider {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--hp-background, #fff) 15%, transparent);
+}
+
+.lp-signin-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px;
+  background: var(--hp-background, #fff);
+}
+
+/* =========================================
+   Sign-Up Plan Selector
+   ========================================= */
+
+.lp-signup-plan-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.lp-signup-plan-tile {
+  padding: 12px;
+  border: 1.5px solid var(--hp-border, #e5e7eb);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--hp-surface, #f9fafb);
+  transition: border-color 0.15s;
+}
+
+.lp-signup-plan-tile--active {
+  border-color: var(--hp-primary, #7c3aed);
+  background: var(--hp-background, #fff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hp-primary, #7c3aed) 10%, transparent);
+}
+
+/* =========================================
+   Pricing Toggle & FAQ
+   ========================================= */
+
+.lp-pricing-toggle {
+  display: inline-flex;
+  gap: 0;
+  border: 1.5px solid var(--hp-border, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.lp-pricing-toggle-btn {
+  padding: 7px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: var(--hp-textMuted, #6b7280);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+
+.lp-pricing-toggle-btn--active {
+  background: var(--hp-primary, #7c3aed);
+  color: var(--hp-background, #fff);
+}
+
+.lp-pricing-save-badge {
+  background: color-mix(in srgb, var(--hp-success, #10b981) 15%, var(--hp-surface, #f9fafb));
+  color: var(--hp-text, #111827);
+  font-size: 0.6875rem;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.lp-pricing-faq {
+  padding: 20px 24px;
+  background: var(--hp-surface, #f9fafb);
+  border-top: 1.5px solid var(--hp-border, #e5e7eb);
+}
+
+.lp-pricing-faq-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hp-border, #e5e7eb);
+}
+
+.lp-pricing-faq-item:last-child {
+  border-bottom: none;
+}
+
+/* =========================================
+   Shop Filter Chips (shared)
+   ========================================= */
+
+.lp-chip {
+  padding: 5px 12px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: var(--hp-surface, #f9fafb);
+  border: 1.5px solid var(--hp-border, #e5e7eb);
+  border-radius: 20px;
+  color: var(--hp-textMuted, #6b7280);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.lp-chip--active {
+  background: var(--hp-primary, #7c3aed);
+  color: var(--hp-background, #fff);
+  border-color: var(--hp-primary, #7c3aed);
+}
+
+/* =========================================
+   Shop Badge
+   ========================================= */
+
+.lp-shop-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  color: var(--hp-background, #fff);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  z-index: 1;
+}
+
+/* =========================================
+   Blog Featured Post
+   ========================================= */
+
+.lp-blog-featured {
+  display: flex;
+  gap: 20px;
+  padding: 16px 24px;
+  background: var(--hp-surface, #f9fafb);
+  border-bottom: 1.5px solid var(--hp-border, #e5e7eb);
+}
+
+.lp-blog-featured-img {
+  width: 100px;
+  height: 80px;
+  border-radius: 12px;
+  background: var(--hp-primary, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.lp-blog-featured-body {
+  flex: 1;
+}
+
+/* =========================================
+   Onboarding Page
+   ========================================= */
+
+.lp-onboard-page {
+  padding: 28px 24px;
+  background: var(--hp-background, #fff);
+}
+
+/* =========================================
+   Settings Sidebar Section Label & Toggle
+   ========================================= */
+
+.lp-settings-sidebar-section-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--hp-textMuted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 4px 10px;
+  margin-top: 4px;
+}
+
+.lp-settings-toggle {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--hp-border, #e5e7eb);
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.lp-settings-toggle::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--hp-background, #fff);
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: left 0.15s;
+}
+
+.lp-settings-toggle--on {
+  background: var(--hp-primary, #7c3aed);
+}
+
+.lp-settings-toggle--on::after {
+  left: 19px;
+}
+
+/* =========================================
+   Profile Cover
+   ========================================= */
+
+.lp-profile-cover {
+  height: 80px;
+  background: var(--hp-primary, #7c3aed);
+  opacity: 0.85;
+}
+
+/* =========================================
+   Documentation Callout
+   ========================================= */
+
+.lp-docs-callout {
+  background: color-mix(in srgb, var(--hp-primary, #7c3aed) 6%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--hp-primary, #7c3aed) 20%, transparent);
+  border-left: 3px solid var(--hp-primary, #7c3aed);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  color: var(--hp-textMuted, #374151);
+  margin: 8px 0;
+  line-height: 1.55;
+}
+
+/* =========================================
+   Real Estate Map Placeholder & Mortgage Teaser
+   ========================================= */
+
+.lp-re-map-placeholder {
+  height: 80px;
+  background: var(--hp-primary, #7c3aed);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+.lp-re-mortgage-teaser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--hp-surface, #f9fafb);
+  border: 1.5px solid var(--hp-border, #e5e7eb);
+  border-radius: 10px;
+}
+
+/* =========================================
    Responsive — Mobile (<768px)
    ========================================= */
 
@@ -2500,7 +3002,7 @@
     position: static;
     height: auto;
     border-right: none;
-    border-bottom: 1.5px solid #e5e7eb;
+    border-bottom: 1.5px solid var(--hp-border, #e5e7eb);
   }
 
   .cp-left-body {
@@ -2542,4 +3044,105 @@
   .lp-stat {
     min-width: 80px;
   }
+}
+
+/* =========================================
+   Danger / Destructive Zone helpers
+   (uses warning token — no dedicated danger token in palette)
+   ========================================= */
+
+.lp-danger-label {
+  color: var(--hp-warning, #f59e0b);
+}
+
+.lp-danger-zone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--hp-warning, #f59e0b) 8%, var(--hp-surface, #f9fafb));
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--hp-warning, #f59e0b) 30%, var(--hp-border, #e5e7eb));
+}
+
+.lp-danger-zone-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--hp-text, #111827);
+}
+
+.lp-danger-zone-sub {
+  font-size: 0.75rem;
+  color: var(--hp-textMuted, #6b7280);
+}
+
+.lp-btn--danger {
+  color: var(--hp-warning, #f59e0b);
+  border-color: color-mix(in srgb, var(--hp-warning, #f59e0b) 30%, var(--hp-border, #e5e7eb));
+  background: transparent;
+}
+
+.lp-btn--surface-on-primary {
+  background: var(--hp-background, #fff);
+  color: var(--hp-primary, #7c3aed);
+  border: 2px solid var(--hp-background, #fff);
+  font-weight: 700;
+}
+
+/* =========================================
+   On-primary text helpers
+   (for content overlaid on primary-colored backgrounds)
+   ========================================= */
+
+.lp-on-primary {
+  color: var(--hp-background, #fff);
+}
+
+.lp-on-primary-muted {
+  color: color-mix(in srgb, var(--hp-background, #fff) 75%, transparent);
+}
+
+.lp-on-primary-chip {
+  background: color-mix(in srgb, var(--hp-background, #fff) 20%, transparent);
+  color: var(--hp-background, #fff);
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+}
+
+.lp-on-primary-stat-value {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--hp-background, #fff);
+}
+
+.lp-on-primary-stat-label {
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--hp-background, #fff) 70%, transparent);
+}
+
+/* =========================================
+   Code block syntax token colors
+   (mapped to kit tokens for kit-aware syntax highlighting)
+   ========================================= */
+
+.lp-code-comment {
+  color: var(--hp-textMuted, #9ca3af);
+}
+
+.lp-code-string {
+  color: var(--hp-warning, #f59e0b);
+}
+
+.lp-code-keyword {
+  color: var(--hp-secondary, #60a5fa);
+}
+
+.lp-code-punctuation {
+  color: var(--hp-border, #e5e7eb);
+}
+
+/* Primary highlight row / selection tint */
+.lp-row--selected {
+  background: color-mix(in srgb, var(--hp-primary, #7c3aed) 5%, transparent);
 }
