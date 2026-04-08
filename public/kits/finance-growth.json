@@ -1,0 +1,32 @@
+{
+  "id": "finance-growth",
+  "name": "Finance Growth",
+  "industry": "Finance",
+  "description": "Emerald and slate for growth-focused fintech startups. Communicates momentum, clarity, and financial health.",
+  "palette": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#F0FDF4",
+      "primary": "#16A34A",
+      "secondary": "#4B5563",
+      "accent": "#0284C7",
+      "text": "#111827",
+      "textMuted": "#6B7280",
+      "border": "#D1FAE5",
+      "success": "#059669",
+      "warning": "#D97706"
+    },
+    "dark": {
+      "background": "#052E16",
+      "surface": "#14532D",
+      "primary": "#4ADE80",
+      "secondary": "#86EFAC",
+      "accent": "#38BDF8",
+      "text": "#F0FDF4",
+      "textMuted": "#86EFAC",
+      "border": "#166534",
+      "success": "#34D399",
+      "warning": "#FCD34D"
+    }
+  }
+}

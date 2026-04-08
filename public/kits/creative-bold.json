@@ -1,0 +1,32 @@
+{
+  "id": "creative-bold",
+  "name": "Creative Bold",
+  "industry": "Creative",
+  "description": "Punchy purples and electric accents for design agencies, portfolios, and creative tools. Unapologetically expressive.",
+  "palette": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#FAF5FF",
+      "primary": "#7C3AED",
+      "secondary": "#A855F7",
+      "accent": "#EC4899",
+      "text": "#1E1B4B",
+      "textMuted": "#6B7280",
+      "border": "#E9D5FF",
+      "success": "#10B981",
+      "warning": "#F59E0B"
+    },
+    "dark": {
+      "background": "#0D0A1E",
+      "surface": "#1E1B4B",
+      "primary": "#A78BFA",
+      "secondary": "#C084FC",
+      "accent": "#F472B6",
+      "text": "#FAF5FF",
+      "textMuted": "#C4B5FD",
+      "border": "#3730A3",
+      "success": "#34D399",
+      "warning": "#FCD34D"
+    }
+  }
+}

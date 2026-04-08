@@ -1,0 +1,32 @@
+{
+  "id": "retail-vibrant",
+  "name": "Retail Vibrant",
+  "industry": "Retail",
+  "description": "Bold and energetic for e-commerce and retail brands. High contrast, eye-catching, designed to drive conversions.",
+  "palette": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#FFF7ED",
+      "primary": "#EA580C",
+      "secondary": "#FB923C",
+      "accent": "#FBBF24",
+      "text": "#1C1917",
+      "textMuted": "#78716C",
+      "border": "#FED7AA",
+      "success": "#16A34A",
+      "warning": "#CA8A04"
+    },
+    "dark": {
+      "background": "#1C0A00",
+      "surface": "#3D1405",
+      "primary": "#FB923C",
+      "secondary": "#FDBA74",
+      "accent": "#FCD34D",
+      "text": "#FFF7ED",
+      "textMuted": "#D6D3D1",
+      "border": "#7C2D12",
+      "success": "#4ADE80",
+      "warning": "#FDE047"
+    }
+  }
+}

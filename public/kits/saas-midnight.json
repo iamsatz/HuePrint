@@ -1,0 +1,32 @@
+{
+  "id": "saas-midnight",
+  "name": "SaaS Midnight",
+  "industry": "SaaS",
+  "description": "Dark-first design system for developer tools, analytics, and power-user SaaS. Sleek and modern with high contrast accents.",
+  "palette": {
+    "light": {
+      "background": "#F8F9FA",
+      "surface": "#FFFFFF",
+      "primary": "#6366F1",
+      "secondary": "#8B5CF6",
+      "accent": "#06B6D4",
+      "text": "#111827",
+      "textMuted": "#6B7280",
+      "border": "#E5E7EB",
+      "success": "#10B981",
+      "warning": "#F59E0B"
+    },
+    "dark": {
+      "background": "#09090B",
+      "surface": "#18181B",
+      "primary": "#818CF8",
+      "secondary": "#A78BFA",
+      "accent": "#22D3EE",
+      "text": "#FAFAFA",
+      "textMuted": "#A1A1AA",
+      "border": "#27272A",
+      "success": "#4ADE80",
+      "warning": "#FDE047"
+    }
+  }
+}

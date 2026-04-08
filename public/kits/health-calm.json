@@ -1,0 +1,32 @@
+{
+  "id": "health-calm",
+  "name": "Health Calm",
+  "industry": "Health",
+  "description": "Soothing greens and warm whites for wellness, telehealth, and medical apps. Evokes calm and clinical reliability.",
+  "palette": {
+    "light": {
+      "background": "#FAFFFE",
+      "surface": "#F0FDF4",
+      "primary": "#059669",
+      "secondary": "#6EE7B7",
+      "accent": "#0891B2",
+      "text": "#064E3B",
+      "textMuted": "#6B7280",
+      "border": "#D1FAE5",
+      "success": "#10B981",
+      "warning": "#F59E0B"
+    },
+    "dark": {
+      "background": "#022C22",
+      "surface": "#064E3B",
+      "primary": "#34D399",
+      "secondary": "#6EE7B7",
+      "accent": "#22D3EE",
+      "text": "#ECFDF5",
+      "textMuted": "#A7F3D0",
+      "border": "#065F46",
+      "success": "#6EE7B7",
+      "warning": "#FCD34D"
+    }
+  }
+}

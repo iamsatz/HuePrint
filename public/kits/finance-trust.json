@@ -1,0 +1,32 @@
+{
+  "id": "finance-trust",
+  "name": "Finance Trust",
+  "industry": "Finance",
+  "description": "Instills confidence with deep navy and gold. Ideal for fintech apps, banking dashboards, and investment platforms.",
+  "palette": {
+    "light": {
+      "background": "#FFFFFF",
+      "surface": "#F9FAFB",
+      "primary": "#1E3A5F",
+      "secondary": "#4B6080",
+      "accent": "#B8952A",
+      "text": "#111827",
+      "textMuted": "#6B7280",
+      "border": "#E5E7EB",
+      "success": "#059669",
+      "warning": "#D97706"
+    },
+    "dark": {
+      "background": "#0D1B2A",
+      "surface": "#1A2B3C",
+      "primary": "#4A90D9",
+      "secondary": "#7EA8C9",
+      "accent": "#D4AA4A",
+      "text": "#F3F4F6",
+      "textMuted": "#9CA3AF",
+      "border": "#2D4A63",
+      "success": "#34D399",
+      "warning": "#FBBF24"
+    }
+  }
+}

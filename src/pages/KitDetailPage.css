@@ -1,0 +1,70 @@
+.kit-detail-page {
+  min-height: calc(100vh - 56px);
+  background: #f8f9fa;
+  padding: 48px 24px 80px;
+}
+
+.kit-detail-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.kit-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-decoration: none;
+  margin-bottom: 48px;
+  padding: 6px 0;
+  transition: color 0.15s;
+}
+
+.kit-detail-back:hover {
+  color: #7c3aed;
+}
+
+.kit-detail-coming-soon {
+  text-align: center;
+  padding: 80px 24px;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 24px;
+}
+
+.kit-detail-icon {
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.kit-detail-coming-soon h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.kit-detail-coming-soon p {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.65;
+  max-width: 420px;
+  margin: 0 auto 12px;
+}
+
+.kit-detail-id {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.kit-detail-id code {
+  font-family: monospace;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #7c3aed;
+}

@@ -1,0 +1,24 @@
+.kit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.kit-grid-empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+  .kit-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .kit-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "health-vitality",
+  "name": "Health Vitality",
+  "industry": "Health",
+  "description": "Warm coral and energizing amber for fitness apps, nutrition platforms, and active wellness brands.",
+  "palette": {
+    "light": {
+      "background": "#FFFBF5",
+      "surface": "#FFF3E0",
+      "primary": "#F97316",
+      "secondary": "#FB923C",
+      "accent": "#EF4444",
+      "text": "#1C1917",
+      "textMuted": "#78716C",
+      "border": "#FED7AA",
+      "success": "#22C55E",
+      "warning": "#EAB308"
+    },
+    "dark": {
+      "background": "#1C0A00",
+      "surface": "#2D1600",
+      "primary": "#FB923C",
+      "secondary": "#FDBA74",
+      "accent": "#F87171",
+      "text": "#FFFBF5",
+      "textMuted": "#D6D3D1",
+      "border": "#7C2D12",
+      "success": "#4ADE80",
+      "warning": "#FDE047"
+    }
+  }
+}
