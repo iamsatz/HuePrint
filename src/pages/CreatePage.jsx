@@ -1111,6 +1111,98 @@ const ROLE_LABELS = {
   text: 'Text',
 }
 
+const TOKEN_GROUP_LABELS = {
+  fontFamilies: 'Font families',
+  fontSizes: 'Font sizes',
+  radii: 'Border radius',
+  shadows: 'Shadows',
+  spacing: 'Spacing rhythm',
+}
+
+function TokenConfidenceBadge({ confidence }) {
+  return <span className={`cp-token-confidence cp-token-confidence--${confidence || 'low'}`}>{confidence || 'low'}</span>
+}
+
+function TokenList({ title, items }) {
+  if (!items || items.length === 0) return null
+  return (
+    <div className="cp-token-card">
+      <div className="cp-token-card-title">{title}</div>
+      <div className="cp-token-list">
+        {items.slice(0, 6).map((item) => (
+          <div className="cp-token-row" key={`${title}-${item.value}`}>
+            <code>{item.value}</code>
+            <span>{item.count}×</span>
+            <TokenConfidenceBadge confidence={item.confidence} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ExtractedTokens({ tokens, onUseFonts }) {
+  if (!tokens) return null
+  const fontFamilies = tokens.typography?.fontFamilies || []
+  const groups = [
+    { key: 'fontFamilies', title: TOKEN_GROUP_LABELS.fontFamilies, items: fontFamilies },
+    { key: 'fontSizes', title: TOKEN_GROUP_LABELS.fontSizes, items: tokens.typography?.fontSizes },
+    { key: 'radii', title: TOKEN_GROUP_LABELS.radii, items: tokens.radii },
+    { key: 'shadows', title: TOKEN_GROUP_LABELS.shadows, items: tokens.shadows },
+    { key: 'spacing', title: TOKEN_GROUP_LABELS.spacing, items: tokens.spacing },
+  ].filter((group) => group.items?.length)
+
+  const hasButtonStyles = tokens.buttonStyles?.length > 0
+  if (groups.length === 0 && !hasButtonStyles) return null
+
+  const canApplyFonts = onUseFonts && fontFamilies.length >= 1
+
+  function handleApplyFonts() {
+    const heading = fontFamilies[0]?.value
+    const body = fontFamilies[1]?.value || fontFamilies[0]?.value
+    if (heading) onUseFonts({ headingFont: heading, bodyFont: body })
+  }
+
+  return (
+    <div className="cp-extract-section">
+      <div className="cp-extract-section-label">
+        Token Suggestions <span className="cp-semantic-badge">V4.0</span>
+      </div>
+      {tokens.summary?.note && <p className="cp-token-note">{tokens.summary.note}</p>}
+      <div className="cp-token-grid">
+        {groups.map((group) => (
+          <TokenList key={group.key} title={group.title} items={group.items} />
+        ))}
+      </div>
+      {canApplyFonts && (
+        <button className="cp-token-apply-fonts-btn" type="button" onClick={handleApplyFonts}>
+          Apply detected fonts to kit →
+        </button>
+      )}
+      {hasButtonStyles && (
+        <div className="cp-token-card cp-token-card--wide">
+          <div className="cp-token-card-title">Button styles</div>
+          <div className="cp-button-token-list">
+            {tokens.buttonStyles.slice(0, 3).map((button) => (
+              <div className="cp-button-token" key={button.selector}>
+                <div className="cp-button-token-head">
+                  <code>{button.selector}</code>
+                  <TokenConfidenceBadge confidence={button.confidence} />
+                </div>
+                <div className="cp-button-token-decls">
+                  {Object.entries(button.declarations || {}).slice(0, 5).map(([name, value]) => (
+                    <span key={name}>{name}: {value}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function autoMapColors(colors) {
   if (!colors || colors.length === 0) return {}
   const mapping = {}
@@ -1145,11 +1237,12 @@ function autoMapColors(colors) {
   return mapping
 }
 
-function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
+function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker }) {
   const [urlInput, setUrlInput] = useState('')
   const [status, setStatus] = useState('idle')
   const [extractedColors, setExtractedColors] = useState([])
   const [semantic, setSemantic] = useState({})
+  const [extractedTokens, setExtractedTokens] = useState(null)
   const [domain, setDomain] = useState('')
   const [accessMode, setAccessMode] = useState('public')
   const [roleMapping, setRoleMapping] = useState({})
@@ -1173,6 +1266,7 @@ function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
     setPrivateNetworkBlocked(false)
     setExtractedColors([])
     setSemantic({})
+    setExtractedTokens(null)
     setRoleMapping({})
     setSelectedRole(null)
 
@@ -1195,6 +1289,7 @@ function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
       } else {
         setExtractedColors(data.colors || [])
         setSemantic(data.semantic || {})
+        setExtractedTokens(data.tokens || null)
         setDomain(data.domain || url)
         setAccessMode(data.accessMode || 'public')
         setRoleMapping(autoMapColors(data.colors || []))
@@ -1224,6 +1319,7 @@ function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
     setUrlInput('')
     setExtractedColors([])
     setSemantic({})
+    setExtractedTokens(null)
     setRoleMapping({})
     setSelectedRole(null)
     setAccessMode('public')
@@ -1281,7 +1377,7 @@ function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
             disabled={!urlInput.trim()}
             onClick={handleExtract}
           >
-            Extract Colors →
+            Extract Colors & Tokens →
           </button>
           <div className={`cp-url-devmode ${isLocalHuePrint ? 'cp-url-devmode--local' : ''}`}>
             <strong>{isLocalHuePrint ? 'Local developer mode' : 'Hosted/public mode'}</strong>
@@ -1404,6 +1500,8 @@ function UrlExtractTab({ onUseColors, onSwitchToColorPicker }) {
               </div>
             </div>
           )}
+
+          <ExtractedTokens tokens={extractedTokens} onUseFonts={onUseTypography} />
 
           <div className="cp-extract-section">
             <div className="cp-extract-section-label">Role Mapping</div>
@@ -1602,6 +1700,7 @@ export default function CreatePage() {
               colorInputMode === 'extract' ? (
                 <UrlExtractTab
                   onUseColors={(data) => { handleImport(data); setColorInputMode('manual') }}
+                  onUseTypography={(fonts) => { setTypography((prev) => normalizeTypography({ ...prev, ...fonts })) }}
                   onSwitchToColorPicker={() => setColorInputMode('manual')}
                 />
               ) : (
