@@ -2148,6 +2148,66 @@
   border-color: rgba(139, 92, 246, 0.55);
 }
 
+/* V4.2 — Generate Kit CTA */
+.cp-generate-kit-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0 4px;
+  border-top: 1px solid #ede9fe;
+  margin-top: 4px;
+}
+
+.cp-generate-kit-preview {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cp-generate-kit-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+.cp-generate-kit-btn {
+  width: 100%;
+  padding: 11px 18px;
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: center;
+}
+
+.cp-generate-kit-btn:hover {
+  background: #6d28d9;
+}
+
+.cp-apply-colors-only-btn {
+  width: 100%;
+  padding: 7px 12px;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  text-align: center;
+}
+
+.cp-apply-colors-only-btn:hover {
+  border-color: #8b5cf6;
+  color: #7c3aed;
+}
+
 .cp-token-card-title {
   margin-bottom: 8px;
   font-size: 0.6875rem;

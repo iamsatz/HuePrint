@@ -1268,7 +1268,7 @@ function autoMapColors(colors) {
   return mapping
 }
 
-function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker, onSuggestPreview }) {
+function UrlExtractTab({ onUseColors, onUseTypography, onSuggestPreview, onGenerateKit, onSwitchToColorPicker }) {
   const [urlInput, setUrlInput] = useState('')
   const [status, setStatus] = useState('idle')
   const [extractedColors, setExtractedColors] = useState([])
@@ -1369,6 +1369,24 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker, on
 
   function handleUse() {
     onUseColors(roleMapping)
+  }
+
+  function handleGenerateKit() {
+    onUseColors(roleMapping)
+    if (onUseTypography && extractedTokens) {
+      const families = extractedTokens.typography?.fontFamilies || []
+      if (families.length >= 1) {
+        const heading = families[0]?.value
+        const body = (families[1]?.value || families[0]?.value)
+        if (heading) onUseTypography({ headingFont: heading, bodyFont: body })
+      }
+    }
+    if (onSuggestPreview && extractedComponents?.suggestion) {
+      onSuggestPreview(extractedComponents.suggestion.previewId)
+    }
+    if (onGenerateKit && domain) {
+      onGenerateKit(domain)
+    }
   }
 
   function handleBrandChip(brand) {
@@ -1567,9 +1585,21 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker, on
             </div>
           </div>
 
-          <button className="cp-save-btn" type="button" onClick={handleUse}>
-            Use These Colors →
-          </button>
+          <div className="cp-generate-kit-wrap">
+            <div className="cp-generate-kit-preview">
+              {Object.entries(ROLE_LABELS).map(([role, label]) => {
+                const hex = roleMapping[role]
+                if (!hex) return null
+                return <div key={role} className="cp-generate-kit-swatch" style={{ background: hex }} title={label} />
+              })}
+            </div>
+            <button className="cp-generate-kit-btn" type="button" onClick={handleGenerateKit}>
+              {domain ? `Generate Kit from ${domain} →` : 'Generate Kit →'}
+            </button>
+            <button className="cp-apply-colors-only-btn" type="button" onClick={handleUse}>
+              Apply colors only
+            </button>
+          </div>
         </>
       )}
     </div>
@@ -1738,6 +1768,7 @@ export default function CreatePage() {
                   onUseColors={(data) => { handleImport(data); setColorInputMode('manual') }}
                   onUseTypography={(fonts) => { setTypography((prev) => normalizeTypography({ ...prev, ...fonts })) }}
                   onSuggestPreview={(previewId) => setPreviewPage(previewId)}
+                  onGenerateKit={(name) => { setKitName(name); setColorInputMode('manual') }}
                   onSwitchToColorPicker={() => setColorInputMode('manual')}
                 />
               ) : (
