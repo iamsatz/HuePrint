@@ -8,27 +8,15 @@ import {
   generateCursorRules,
   generateReplitPrompt,
 } from '../lib/exportGenerators'
-import { FONT_PAIRS, FONT_PAIR_GROUPS, getDefaultPair } from '../lib/fontPairs'
-import { loadFont, loadFontRecord } from '../lib/loadGoogleFont'
+import { loadFont, loadFontRecord, loadLibraryFont } from '../lib/loadGoogleFont'
 import { COLOR_USAGE_PRESETS, normalizeColorUsage } from '../lib/colorUsagePresets'
 import { DEFAULT_PORTFOLIO_SECTIONS } from '../lib/portfolioPreviewOptions'
 import { PREVIEW_SECTION_OPTIONS, getDefaultSections } from '../lib/previewSectionOptions'
-import {
-  GOOGLE_FONT_CATEGORIES,
-  GOOGLE_FONT_POPULARITY,
-} from '../lib/googleFontsCatalog'
-import { FONT_PROVIDERS, getFontRecordByFamily, searchFreeFonts } from '../lib/freeFontCatalog'
-import {
-  FONT_SUGGESTION_CONTEXTS,
-  getSuggestedPairings,
-} from '../lib/fontSuggestions'
+import { getFontRecordByFamily } from '../lib/freeFontCatalog'
+import { searchFontLibrary, PROVIDER_LABELS } from '../lib/fontLibrary'
 import { deriveInspirationUpdate } from '../lib/inspirationAdapters'
 import {
-  TYPOGRAPHY_MODES,
-  TYPOGRAPHY_ROLES,
-  TYPOGRAPHY_PRESETS,
   getDefaultTypography,
-  getFontOptions,
   normalizeTypography,
 } from '../lib/typographyRoles'
 import PreviewDashboard from '../components/create/previews/PreviewDashboard'
@@ -127,8 +115,6 @@ const DEFAULT_COLORS = {
   surface: '',
   text: '#111827',
 }
-
-const FONT_OPTIONS = getFontOptions()
 
 function isValidHex(val) {
   return /^#[0-9a-fA-F]{3,8}$/.test((val || '').trim())
@@ -537,321 +523,217 @@ function ColorInput({ roleKey, label, hint, required, value, onChange }) {
   )
 }
 
-function FontPairPicker({ value, onChange }) {
-  const groups = FONT_PAIR_GROUPS.map((group) => ({
-    group,
-    pairs: FONT_PAIRS.filter((p) => p.personality === group),
-  }))
 
-  return (
-    <div className="cp-font-pair-picker">
-      <div className="cp-font-pair-row">
-        <div className="cp-font-pair-info">
-          <span className="cp-font-pair-label">Font Pair</span>
-          <span className="cp-font-pair-hint">Heading / Body</span>
-        </div>
-        <select
-          className="cp-font-pair-select"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          aria-label="Select font pair"
-        >
-          {groups.map(({ group, pairs }) => (
-            <optgroup key={group} label={group}>
-              {pairs.map((pair) => (
-                <option key={pair.id} value={pair.id}>
-                  {pair.heading} / {pair.body}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-      </div>
-      {value && (() => {
-        const pair = FONT_PAIRS.find((p) => p.id === value)
-        return pair ? (
-          <p className="cp-font-pair-desc">{pair.description}</p>
-        ) : null
-      })()}
-    </div>
-  )
-}
 
-function FreeFontSearch({ activeRoles, onApplyFont }) {
+const TYPE_ROLES = [
+  { key: 'displayFont', label: 'Display' },
+  { key: 'headingFont', label: 'Heading' },
+  { key: 'bodyFont', label: 'Body' },
+  { key: 'uiFont', label: 'Action / UI' },
+  { key: 'monoFont', label: 'Code' },
+]
+
+function TypographyTab({ typography, onTypographyChange }) {
+  const normalized = normalizeTypography(typography)
   const [query, setQuery] = useState('')
-  const [provider, setProvider] = useState('all')
-  const [category, setCategory] = useState('all')
-  const [popularity, setPopularity] = useState('all')
-  const [minStyles, setMinStyles] = useState('0')
-  const [variableOnly, setVariableOnly] = useState(false)
-  const [targetRole, setTargetRole] = useState(activeRoles[0]?.key || 'headingFont')
-
-  const results = searchFreeFonts({ query, provider, category, popularity, minStyles, variableOnly }).slice(0, 12)
+  const [suggestions, setSuggestions] = useState([])
+  const [addingTo, setAddingTo] = useState(null) // null | 'new' | family-string
+  const [pendingFont, setPendingFont] = useState(null) // { family, provider } — added but no roles yet
 
   useEffect(() => {
-    results.slice(0, 6).forEach((font) => loadFontRecord(font))
-  }, [results])
-
-  useEffect(() => {
-    if (!activeRoles.some((role) => role.key === targetRole) && activeRoles[0]) {
-      setTargetRole(activeRoles[0].key)
+    if (query.length >= 3) {
+      const results = searchFontLibrary(query, 12)
+      setSuggestions(results)
+      results.forEach((f) => loadLibraryFont(f))
+    } else {
+      setSuggestions([])
     }
-  }, [activeRoles, targetRole])
+  }, [query])
 
-  return (
-    <div className="cp-google-fonts">
-      <div className="cp-type-block-head">
-        <div>
-          <span className="cp-type-block-title">Free Font Search</span>
-          <span className="cp-type-block-hint">Google Fonts plus curated free/fontshare-style picks</span>
-        </div>
-      </div>
-
-      <div className="cp-google-font-controls">
-        <input
-          className="cp-google-font-search"
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search Inter, Satoshi, serif, docs, luxury..."
-          aria-label="Search free fonts"
-        />
-        <select value={targetRole} onChange={(e) => setTargetRole(e.target.value)} aria-label="Assign font role">
-          {activeRoles.map((role) => (
-            <option key={role.key} value={role.key}>{role.label}</option>
-          ))}
-        </select>
-        <select value={provider} onChange={(e) => setProvider(e.target.value)} aria-label="Filter font source">
-          {FONT_PROVIDERS.map((item) => (
-            <option key={item.id} value={item.id}>{item.label}</option>
-          ))}
-        </select>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Filter font category">
-          {GOOGLE_FONT_CATEGORIES.map((item) => (
-            <option key={item} value={item}>{item === 'all' ? 'All categories' : item}</option>
-          ))}
-        </select>
-        <select value={popularity} onChange={(e) => setPopularity(e.target.value)} aria-label="Filter font popularity">
-          {GOOGLE_FONT_POPULARITY.map((item) => (
-            <option key={item} value={item}>{item === 'all' ? 'All popularity' : item}</option>
-          ))}
-        </select>
-        <select value={minStyles} onChange={(e) => setMinStyles(e.target.value)} aria-label="Minimum number of styles">
-          <option value="0">Any styles</option>
-          <option value="4">4+ styles</option>
-          <option value="8">8+ styles</option>
-          <option value="12">12+ styles</option>
-        </select>
-        <label className="cp-google-font-toggle">
-          <input
-            type="checkbox"
-            checked={variableOnly}
-            onChange={(e) => setVariableOnly(e.target.checked)}
-          />
-          Variable
-        </label>
-      </div>
-
-      <div className="cp-google-font-results">
-        {results.map((font) => (
-          <div key={font.family} className="cp-google-font-card">
-            <div className="cp-google-font-meta">
-              <span className="cp-google-font-provider">{font.providerLabel}</span>
-              <span>{font.category}</span>
-              <span>{font.styles} styles</span>
-              {font.variable && <span>Variable</span>}
-            </div>
-            <div className="cp-google-font-preview" style={{ fontFamily: `'${font.family}', sans-serif` }}>
-              {font.family}
-            </div>
-            <div className="cp-google-font-tags">
-              {font.tags.slice(0, 4).map((tag) => <span key={tag}>{tag}</span>)}
-            </div>
-            <div className="cp-google-font-license">
-              <strong>{font.license}</strong>
-              <span>{font.recommendedUse}</span>
-            </div>
-            <button
-              type="button"
-              className="cp-google-font-apply"
-              onClick={() => {
-                loadFontRecord(font)
-                onApplyFont(targetRole, font.family)
-              }}
-            >
-              Apply to {activeRoles.find((role) => role.key === targetRole)?.label || 'role'}
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SmartFontSuggestions({ typography, activeRoles, onApplySystem }) {
-  const [contextId, setContextId] = useState(FONT_SUGGESTION_CONTEXTS[0].id)
-  const [pairingRole, setPairingRole] = useState(activeRoles[0]?.key || 'headingFont')
-  const context = FONT_SUGGESTION_CONTEXTS.find((item) => item.id === contextId) || FONT_SUGGESTION_CONTEXTS[0]
-  const pairingFont = typography[pairingRole] || typography.headingFont
-  const pairings = getSuggestedPairings(pairingFont)
-
-  useEffect(() => {
-    if (!activeRoles.some((role) => role.key === pairingRole) && activeRoles[0]) {
-      setPairingRole(activeRoles[0].key)
+  function deriveCards() {
+    const map = new Map()
+    for (const role of TYPE_ROLES) {
+      const family = normalized[role.key]
+      if (!family) continue
+      if (!map.has(family)) map.set(family, { family, roles: [] })
+      map.get(family).roles.push(role.key)
     }
-  }, [activeRoles, pairingRole])
-
-  function applySystem(system) {
-    onApplySystem(system)
+    return Array.from(map.values())
   }
 
-  return (
-    <div className="cp-smart-fonts">
-      <div className="cp-type-block-head">
-        <div>
-          <span className="cp-type-block-title">Smart Font Suggestions</span>
-          <span className="cp-type-block-hint">Complete role systems by product context</span>
-        </div>
-      </div>
+  const cards = deriveCards()
+  const allCards = pendingFont && !cards.find((c) => c.family === pendingFont.family)
+    ? [...cards, { family: pendingFont.family, provider: pendingFont.provider, roles: [] }]
+    : cards
 
-      <div className="cp-smart-font-controls">
-        <select value={contextId} onChange={(e) => setContextId(e.target.value)} aria-label="Suggestion context">
-          {FONT_SUGGESTION_CONTEXTS.map((item) => (
-            <option key={item.id} value={item.id}>{item.label}</option>
-          ))}
-        </select>
-        <span>{context.context}</span>
-      </div>
+  function emitChange(patch) {
+    const next = { ...normalized, ...patch }
+    // mode 'four' has no collapsing constraints in normalizeTypography,
+    // so all independent role assignments are preserved.
+    next.mode = 'four'
+    onTypographyChange(next)
+  }
 
-      <div className="cp-smart-system-grid">
-        {context.systems.map((system) => (
+  function assignRole(targetFamily, roleKey) {
+    if (pendingFont?.family === targetFamily) {
+      emitChange({ [roleKey]: targetFamily })
+      setPendingFont(null)
+    } else {
+      emitChange({ [roleKey]: targetFamily })
+    }
+  }
+
+  function changeFontFamily(oldFamily, newFont) {
+    loadLibraryFont(newFont)
+    const patch = {}
+    for (const role of TYPE_ROLES) {
+      if (normalized[role.key] === oldFamily) patch[role.key] = newFont.family
+    }
+    emitChange(patch)
+    closeSearch()
+  }
+
+  function addNewTypeface(font) {
+    loadLibraryFont(font)
+    setPendingFont({ family: font.family, provider: font.provider })
+    closeSearch()
+  }
+
+  function removeCard(family) {
+    if (allCards.length <= 1) return
+    if (pendingFont?.family === family) { setPendingFont(null); return }
+    const card = allCards.find((c) => c.family === family)
+    const remaining = allCards.filter((c) => c.family !== family)
+    const fallback = remaining[0]?.family
+    if (!card || !fallback) return
+    const patch = {}
+    for (const roleKey of card.roles) patch[roleKey] = fallback
+    emitChange(patch)
+  }
+
+  function closeSearch() {
+    setAddingTo(null); setQuery(''); setSuggestions([])
+  }
+
+  function SuggestionList({ onSelect }) {
+    if (!suggestions.length) return null
+    return (
+      <div className="cp-type-suggestions">
+        {suggestions.map((font) => (
           <button
-            key={system.name}
+            key={font.family}
             type="button"
-            className="cp-smart-system-card"
-            onClick={() => applySystem(system)}
+            className="cp-type-suggestion"
+            onClick={() => onSelect(font)}
           >
-            <span className="cp-smart-system-name">{system.name}</span>
-            <span className="cp-smart-system-stack">
-              {system.displayFont} / {system.headingFont} / {system.bodyFont} / {system.monoFont}
+            <span className="cp-type-suggestion-name" style={{ fontFamily: `'${font.family}', sans-serif` }}>
+              {font.family}
             </span>
-            <span className="cp-smart-system-reason">{system.reason}</span>
+            <span className="cp-type-suggestion-badge">{PROVIDER_LABELS[font.provider] || font.provider}</span>
           </button>
         ))}
       </div>
-
-      <div className="cp-smart-pairings">
-        <div className="cp-smart-pairings-head">
-          <span>Suggest pairings for</span>
-          <select value={pairingRole} onChange={(e) => setPairingRole(e.target.value)} aria-label="Pairing role">
-            {activeRoles.map((role) => (
-              <option key={role.key} value={role.key}>{role.label}</option>
-            ))}
-          </select>
-        </div>
-        <div className="cp-smart-pairing-list">
-          {pairings.length > 0 ? pairings.map((system) => (
-            <button
-              key={system.name}
-              type="button"
-              className="cp-smart-pairing"
-              onClick={() => applySystem(system)}
-            >
-              <strong>{system.name}</strong>
-              <span>{system.displayFont} / {system.headingFont} / {system.bodyFont}</span>
-            </button>
-          )) : (
-            <p className="cp-smart-empty">No saved pairing rules for {pairingFont}. Try a context system above.</p>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function TypographyTab({ typography, starterPairId, onTypographyChange, onApplyPair, onApplyPreset }) {
-  const normalized = normalizeTypography(typography)
-  const activeMode = TYPOGRAPHY_MODES.find((mode) => mode.id === normalized.mode) || TYPOGRAPHY_MODES[1]
-  const visibleRoles = TYPOGRAPHY_ROLES.filter((role) => role.minMode <= activeMode.roleCount)
-
-  function updateField(key, value) {
-    onTypographyChange({ ...normalized, [key]: value })
-  }
-
-  function updateMode(modeId) {
-    onTypographyChange(normalizeTypography({ ...normalized, mode: modeId }))
+    )
   }
 
   return (
     <div className="cp-typography-studio">
-      <div className="cp-typography-mode-grid">
-        {TYPOGRAPHY_MODES.map((mode) => (
-          <button
-            key={mode.id}
-            type="button"
-            className={`cp-type-mode-card ${normalized.mode === mode.id ? 'cp-type-mode-card--active' : ''}`}
-            onClick={() => updateMode(mode.id)}
-          >
-            <span className="cp-type-mode-title">{mode.label}</span>
-            <span className="cp-type-mode-count">{mode.roleCount} role{mode.roleCount > 1 ? 's' : ''}</span>
-            <span className="cp-type-mode-fit">{mode.bestFor}</span>
-            <span className="cp-type-mode-why">{mode.why}</span>
-          </button>
-        ))}
-      </div>
+      <div className="cp-type-cards">
+        {allCards.map((card) => {
+          const isPending = pendingFont?.family === card.family
+          return (
+            <div key={card.family} className="cp-type-card">
+              <div className="cp-type-card-head">
+                <span className="cp-type-card-family" style={{ fontFamily: `'${card.family}', sans-serif` }}>
+                  {card.family}
+                </span>
+                <div className="cp-type-card-meta">
+                  {card.provider && (
+                    <span className="cp-type-card-provider">{PROVIDER_LABELS[card.provider] || card.provider}</span>
+                  )}
+                  <button
+                    type="button"
+                    className="cp-type-card-change"
+                    onClick={() => { setAddingTo(card.family); setQuery(''); setSuggestions([]) }}
+                  >
+                    Change
+                  </button>
+                  {allCards.length > 1 && (
+                    <button type="button" className="cp-type-card-remove" onClick={() => removeCard(card.family)}>
+                      ×
+                    </button>
+                  )}
+                </div>
+              </div>
 
-      <div className="cp-type-block">
-        <div className="cp-type-block-head">
-          <span className="cp-type-block-title">Starter Pair</span>
-          <span className="cp-type-block-hint">Optional shortcut</span>
-        </div>
-        <FontPairPicker value={starterPairId} onChange={onApplyPair} />
-      </div>
+              {isPending && (
+                <p className="cp-type-card-hint">Click a role to assign this typeface:</p>
+              )}
 
-      <div className="cp-type-role-list">
-        {visibleRoles.map((role) => (
-          <div key={role.key} className="cp-type-role-row">
-            <div className="cp-type-role-copy">
-              <span className="cp-type-role-label">{role.label}</span>
-              <span className="cp-type-role-hint">{role.hint}</span>
+              <div className="cp-type-role-chips">
+                {TYPE_ROLES.map((role) => {
+                  const active = normalized[role.key] === card.family
+                  return (
+                    <button
+                      key={role.key}
+                      type="button"
+                      className={`cp-type-role-chip${active ? ' cp-type-role-chip--active' : ''}`}
+                      onClick={() => assignRole(card.family, role.key)}
+                      title={active ? `${role.label} — click to move this role` : `Assign ${role.label} to ${card.family}`}
+                    >
+                      {role.label}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {addingTo === card.family && (
+                <div className="cp-type-search-inline">
+                  <div className="cp-type-search-row">
+                    <input
+                      autoFocus
+                      type="search"
+                      className="cp-type-search-input"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Type 3+ letters…"
+                    />
+                    <button type="button" className="cp-type-search-cancel" onClick={closeSearch}>Cancel</button>
+                  </div>
+                  <SuggestionList onSelect={(font) => changeFontFamily(card.family, font)} />
+                </div>
+              )}
             </div>
-            <select
-              className="cp-type-role-select"
-              value={normalized[role.key]}
-              onChange={(e) => updateField(role.key, e.target.value)}
-              aria-label={`${role.label} font`}
-            >
-              {FONT_OPTIONS.map((font) => (
-                <option key={font} value={font}>{font}</option>
-              ))}
-            </select>
+          )
+        })}
+      </div>
+
+      {addingTo === 'new' ? (
+        <div className="cp-type-add-search">
+          <div className="cp-type-search-row">
+            <input
+              autoFocus
+              type="search"
+              className="cp-type-search-input"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search fonts — type 3+ letters…"
+            />
+            <button type="button" className="cp-type-search-cancel" onClick={closeSearch}>Cancel</button>
           </div>
-        ))}
-      </div>
-
-      <FreeFontSearch activeRoles={visibleRoles} onApplyFont={updateField} />
-
-      <SmartFontSuggestions
-        typography={normalized}
-        activeRoles={visibleRoles}
-        onApplySystem={onApplyPreset}
-      />
-
-      <div className="cp-type-preset-grid">
-        {TYPOGRAPHY_PRESETS.map((preset) => (
+          <SuggestionList onSelect={addNewTypeface} />
+        </div>
+      ) : (
+        allCards.length < 5 && (
           <button
-            key={preset.id}
             type="button"
-            className="cp-type-preset"
-            onClick={() => onApplyPreset(preset)}
+            className="cp-type-add-btn"
+            onClick={() => setAddingTo('new')}
           >
-            <span className="cp-type-preset-name">{preset.label}</span>
-            <span className="cp-type-preset-stack">
-              {preset.displayFont} / {preset.headingFont} / {preset.bodyFont}
-            </span>
+            + Add typeface
           </button>
-        ))}
-      </div>
+        )
+      )}
 
       <div className="cp-type-specimen">
         <div className="cp-type-display" style={{ fontFamily: `'${normalized.displayFont}', sans-serif` }}>
@@ -1566,7 +1448,6 @@ export default function CreatePage() {
   const [values, setValues] = useState({ ...DEFAULT_COLORS })
   const [kitName, setKitName] = useState('')
   const [showExport, setShowExport] = useState(false)
-  const [fontPairId, setFontPairId] = useState(getDefaultPair().id)
   const [typography, setTypography] = useState(() => getDefaultTypography())
   const [pageSections, setPageSections] = useState(() => {
     const state = { portfolio: { ...DEFAULT_PORTFOLIO_SECTIONS } }
@@ -1635,29 +1516,8 @@ export default function CreatePage() {
     setActiveTab('build')
   }
 
-  function handleFontPairChange(id) {
-    setFontPairId(id)
-    const pair = FONT_PAIRS.find((p) => p.id === id)
-    if (pair) {
-      setTypography((prev) => normalizeTypography({
-        ...prev,
-        headingFont: pair.heading,
-        bodyFont: pair.body,
-        displayFont: prev.mode === 'three' || prev.mode === 'four' ? prev.displayFont : pair.heading,
-      }))
-    }
-  }
-
   function handleTypographyChange(nextTypography) {
     setTypography(normalizeTypography(nextTypography))
-  }
-
-  function handleTypographyPreset(preset) {
-    setTypography((prev) => normalizeTypography({
-      ...prev,
-      ...preset,
-      mode: 'four',
-    }))
   }
 
   function handleColorUsagePresetChange(id) {
@@ -1766,10 +1626,7 @@ export default function CreatePage() {
             ) : activeTab === 'typography' ? (
               <TypographyTab
                 typography={selectedTypography}
-                starterPairId={fontPairId}
                 onTypographyChange={handleTypographyChange}
-                onApplyPair={handleFontPairChange}
-                onApplyPreset={handleTypographyPreset}
               />
             ) : (
               <ImportTab onImport={handleImport} />

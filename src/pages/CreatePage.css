@@ -383,7 +383,256 @@
 .cp-typography-studio {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
+}
+
+/* Typeface cards */
+
+.cp-type-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-type-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.cp-type-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cp-type-card-family {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #111827;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cp-type-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.cp-type-card-provider {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 6px;
+  padding: 2px 7px;
+  letter-spacing: 0.02em;
+}
+
+.cp-type-card-change {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.cp-type-card-change:hover {
+  border-color: #8B5CF6;
+  color: #7c3aed;
+}
+
+.cp-type-card-remove {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #9ca3af;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.cp-type-card-remove:hover {
+  border-color: #fca5a5;
+  color: #ef4444;
+}
+
+.cp-type-card-hint {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Role chips */
+
+.cp-type-role-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cp-type-role-chip {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+
+.cp-type-role-chip:hover {
+  border-color: #c4b5fd;
+  color: #7c3aed;
+}
+
+.cp-type-role-chip--active {
+  color: #7c3aed;
+  background: #f5f3ff;
+  border-color: #8B5CF6;
+}
+
+/* Inline search (inside a card or for new typeface) */
+
+.cp-type-search-inline,
+.cp-type-add-search {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-type-search-row {
+  display: flex;
+  gap: 6px;
+}
+
+.cp-type-search-input {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 0.8125rem;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  color: #111827;
+}
+
+.cp-type-search-input:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.cp-type-search-cancel {
+  padding: 7px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: none;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.cp-type-search-cancel:hover {
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.cp-type-suggestions {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cp-type-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+
+.cp-type-suggestion:last-child {
+  border-bottom: none;
+}
+
+.cp-type-suggestion:hover {
+  background: #faf5ff;
+}
+
+.cp-type-suggestion-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cp-type-suggestion-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 5px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+}
+
+/* Add typeface button */
+
+.cp-type-add-btn {
+  width: 100%;
+  padding: 9px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #7c3aed;
+  background: #faf5ff;
+  border: 1.5px dashed #c4b5fd;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.cp-type-add-btn:hover {
+  border-color: #8B5CF6;
+  background: #f5f3ff;
 }
 
 .cp-typography-mode-grid,
