@@ -102,7 +102,7 @@ function CoursesGrid() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {COURSES.slice(0, 4).map((course, i) => (
           <div key={i} className="lp-card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ height: 56, background: `var(--hp-${['primary','secondary','accent','success'][i]})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+            <div style={{ height: 56, background: `var(--hp-${['primary','secondary','accent','success'][i] || 'primary'}, var(--hp-primary))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
               {['🎨','⚛️','📐','🎯'][i]}
             </div>
             <div style={{ padding: '10px 12px' }}>
@@ -130,7 +130,7 @@ function CoursesList() {
       <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--hp-text)', marginBottom: 10 }}>My courses</div>
       {COURSES.map((course, i) => (
         <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 0', borderBottom: i < COURSES.length - 1 ? '1px solid var(--hp-border)' : 'none' }}>
-          <div style={{ width: 44, height: 44, borderRadius: 10, background: `var(--hp-${['primary','secondary','accent','success'][i]})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', flexShrink: 0 }}>
+          <div style={{ width: 44, height: 44, borderRadius: 10, background: `var(--hp-${['primary','secondary','accent','success'][i] || 'primary'}, var(--hp-primary))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', flexShrink: 0 }}>
             {['🎨','⚛️','📐','🎯'][i]}
           </div>
           <div style={{ flex: 1 }}>

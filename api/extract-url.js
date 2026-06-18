@@ -6,8 +6,15 @@ export default async function handler(req, res) {
   }
 
   const { url } = req.body || {}
-  const result = await extractUrlColors(url, {
-    allowPrivateNetwork: false,
-  })
-  return res.json(result)
+  try {
+    const result = await extractUrlColors(url, {
+      allowPrivateNetwork: false,
+    })
+    return res.json(result)
+  } catch (err) {
+    return res.status(500).json({
+      error: true,
+      message: 'Something went wrong while extracting this URL. Please try again.',
+    })
+  }
 }

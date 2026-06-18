@@ -100,7 +100,7 @@ function ResultsGrid() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {DESTINATIONS.map((d, i) => (
           <div key={i} className="lp-card" style={{ padding: 0, overflow: 'hidden', cursor: 'pointer' }}>
-            <div style={{ height: 64, background: `var(--hp-${['primary','secondary','accent','success'][i]})`, display: 'flex', alignItems: 'flex-end', padding: '8px 10px' }}>
+            <div style={{ height: 64, background: `var(--hp-${['primary','secondary','accent','success'][i] || 'primary'}, var(--hp-primary))`, display: 'flex', alignItems: 'flex-end', padding: '8px 10px' }}>
               <div style={{ fontSize: '1.25rem' }}>{d.flag}</div>
               <div style={{ marginLeft: 'auto', background: 'rgba(0,0,0,0.3)', borderRadius: 12, padding: '2px 8px', fontSize: '0.625rem', color: '#ffffff', fontWeight: 700 }}>⭐ {d.rating}</div>
             </div>
@@ -122,7 +122,7 @@ function ResultsList() {
       <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--hp-text)', marginBottom: 10 }}>Available packages</div>
       {DESTINATIONS.map((d, i) => (
         <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < DESTINATIONS.length - 1 ? '1px solid var(--hp-border)' : 'none' }}>
-          <div style={{ width: 56, height: 44, borderRadius: 10, background: `var(--hp-${['primary','secondary','accent','success'][i]})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>{d.flag}</div>
+          <div style={{ width: 56, height: 44, borderRadius: 10, background: `var(--hp-${['primary','secondary','accent','success'][i] || 'primary'}, var(--hp-primary))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>{d.flag}</div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--hp-text)' }}>{d.name}, {d.country}</div>
             <div style={{ fontSize: '0.6875rem', color: 'var(--hp-textMuted)' }}>{d.nights} · ⭐ {d.rating} ({d.reviews})</div>
@@ -202,7 +202,7 @@ function CardCompact() {
       <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--hp-text)', marginBottom: 8 }}>Quick picks</div>
       <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
         {DESTINATIONS.map((d, i) => (
-          <div key={i} style={{ flexShrink: 0, width: 100, background: `var(--hp-${['primary','secondary','accent','success'][i]})`, borderRadius: 10, padding: '10px 10px', cursor: 'pointer' }}>
+          <div key={i} style={{ flexShrink: 0, width: 100, background: `var(--hp-${['primary','secondary','accent','success'][i] || 'primary'}, var(--hp-primary))`, borderRadius: 10, padding: '10px 10px', cursor: 'pointer' }}>
             <div style={{ fontSize: '1.25rem', marginBottom: 4 }}>{d.flag}</div>
             <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ffffff' }}>{d.name}</div>
             <div style={{ fontSize: '0.625rem', color: 'rgba(255,255,255,0.7)', marginBottom: 4 }}>{d.nights}</div>

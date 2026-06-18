@@ -311,26 +311,41 @@ export default function PreviewFinance({ kit, sectionConfig = {}, onSectionChang
     config.chart === 'portfolio' ? <ChartPortfolio /> :
     <ChartSpending />
 
+  const dashboardBody = (
+    <div style={{ flex: 1, overflow: 'hidden' }}>
+      {!isTopbar && (
+        <div style={{ padding: '14px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--hp-textMuted)' }}>Good morning,</div>
+            <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--hp-text)', fontFamily: 'var(--hp-heading-font)' }}>Alex Kim</div>
+          </div>
+          <button className="lp-btn lp-btn--primary lp-btn--sm">+ New transfer</button>
+        </div>
+      )}
+      {wrap('accounts', accountsNode)}
+      {wrap('chart', chartNode)}
+      {wrap('transactions', txNode)}
+    </div>
+  )
+
   return (
     <div ref={ref} style={{ fontFamily: 'var(--hp-body-font, sans-serif)', background: 'var(--hp-background)', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
-      {isTopbar && wrap('nav', <NavTopbar />)}
-      <div style={{ display: 'flex', flex: 1 }}>
-        {!isTopbar && wrap('nav', navNode)}
-        <div style={{ flex: 1, overflow: 'hidden' }}>
-          {!isTopbar && (
-            <div style={{ padding: '14px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--hp-textMuted)' }}>Good morning,</div>
-                <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--hp-text)', fontFamily: 'var(--hp-heading-font)' }}>Alex Kim</div>
-              </div>
-              <button className="lp-btn lp-btn--primary lp-btn--sm">+ New transfer</button>
-            </div>
-          )}
-          {wrap('accounts', accountsNode)}
-          {wrap('chart', chartNode)}
-          {wrap('transactions', txNode)}
-        </div>
-      </div>
+      {isTopbar ? (
+        <>
+          {wrap('nav', <NavTopbar />)}
+          <div style={{ display: 'flex', flex: 1 }}>{dashboardBody}</div>
+        </>
+      ) : (
+        // Wrap the whole side-by-side row as the nav section so its variant
+        // chip bar spans full width above it (like topbar) instead of being
+        // squeezed into the fixed-width sidebar column.
+        wrap('nav', (
+          <div style={{ display: 'flex', flex: 1 }}>
+            <div style={{ flexShrink: 0 }}>{navNode}</div>
+            {dashboardBody}
+          </div>
+        ))
+      )}
     </div>
   )
 }

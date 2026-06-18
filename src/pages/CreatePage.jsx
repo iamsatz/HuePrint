@@ -1206,7 +1206,7 @@ function ExtractedTokens({ tokens, onUseFonts }) {
 const CONFIDENCE_ICON = { high: '●', medium: '◐' }
 
 function DetectedComponents({ components, onSuggestPreview }) {
-  if (!components || components.detected.length === 0) return null
+  if (!components || !components.detected?.length) return null
   const { detected, suggestion } = components
   return (
     <div className="cp-extract-section">
@@ -1384,21 +1384,23 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSuggestPreview, onGener
     if (onSuggestPreview && extractedComponents?.suggestion) {
       onSuggestPreview(extractedComponents.suggestion.previewId)
     }
-    if (onGenerateKit && domain) {
-      onGenerateKit(domain)
+    // Always name the kit from whatever domain/URL we have, so the "name +
+    // switch to manual" transition can't half-apply when `domain` is empty.
+    if (onGenerateKit) {
+      onGenerateKit(domain || urlInput)
     }
   }
 
   function handleBrandChip(brand) {
     const url = BRAND_GUIDELINES[brand]
     setUrlInput(url)
-    setTimeout(() => handleExtractWithUrl(url), 0)
+    handleExtractWithUrl(url)
   }
 
   function handleMatchedBrandClick() {
     const url = BRAND_GUIDELINES[matchedBrand]
     setUrlInput(url)
-    setTimeout(() => handleExtractWithUrl(url), 0)
+    handleExtractWithUrl(url)
   }
 
   const displayDomain = domain || urlInput
@@ -1660,11 +1662,15 @@ export default function CreatePage() {
   }
 
   function handleImport(palette) {
-    const next = { ...DEFAULT_COLORS }
-    for (const role of ROLES) {
-      if (palette[role.key]) next[role.key] = palette[role.key]
-    }
-    setValues(next)
+    // Only overwrite roles the palette actually provides; keep the user's
+    // current value for any unmapped role rather than resetting to defaults.
+    setValues((prev) => {
+      const next = { ...prev }
+      for (const role of ROLES) {
+        if (palette[role.key]) next[role.key] = palette[role.key]
+      }
+      return next
+    })
     setActiveTab('build')
   }
 
