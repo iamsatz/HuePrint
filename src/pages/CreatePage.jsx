@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { parseFigmaJson } from '../lib/parseFigmaJson'
 import { BRAND_GUIDELINES, SUGGESTED_BRANDS } from '../lib/brandGuidelines'
@@ -14,6 +14,7 @@ import { DEFAULT_PORTFOLIO_SECTIONS } from '../lib/portfolioPreviewOptions'
 import { PREVIEW_SECTION_OPTIONS, getDefaultSections } from '../lib/previewSectionOptions'
 import { getFontRecordByFamily } from '../lib/freeFontCatalog'
 import { searchFontLibrary, PROVIDER_LABELS } from '../lib/fontLibrary'
+import { generateScale } from '../lib/colorScale'
 import { deriveInspirationUpdate } from '../lib/inspirationAdapters'
 import {
   getDefaultTypography,
@@ -838,6 +839,86 @@ function ColorUsageSection({ presetId, customRatios, onPresetChange, onCustomRat
   )
 }
 
+function ScalePicker({ baseColor, values, onChange }) {
+  const [scaleBase, setScaleBase] = useState(baseColor || '#7c3aed')
+  const [selectedStep, setSelectedStep] = useState(null)
+
+  const scale = useMemo(() => {
+    if (isValidHex(scaleBase)) return generateScale(scaleBase)
+    return null
+  }, [scaleBase])
+
+  const selectedHex = selectedStep !== null && scale ? scale[selectedStep] : null
+
+  return (
+    <div className="cp-scale-picker">
+      <div className="cp-scale-input-row">
+        <label className="cp-scale-input-label">Base color</label>
+        <div className="cp-scale-input-wrap">
+          {isValidHex(scaleBase) && (
+            <div className="cp-scale-input-swatch" style={{ background: scaleBase }} />
+          )}
+          <input
+            type="text"
+            className={`cp-scale-input ${scaleBase && !isValidHex(scaleBase) ? 'cp-scale-input--error' : ''}`}
+            value={scaleBase}
+            onChange={(e) => { setScaleBase(e.target.value); setSelectedStep(null) }}
+            placeholder="#7c3aed"
+            maxLength={9}
+            spellCheck={false}
+          />
+        </div>
+      </div>
+
+      {scale ? (
+        <>
+          <div className="cp-scale-swatches">
+            {scale.map((hex, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`cp-scale-swatch${selectedStep === i ? ' cp-scale-swatch--selected' : ''}`}
+                style={{ background: hex }}
+                onClick={() => setSelectedStep(selectedStep === i ? null : i)}
+                title={`Step ${i + 1} — ${hex}`}
+              />
+            ))}
+          </div>
+          <div className="cp-scale-labels">
+            {scale.map((_, i) => <span key={i}>{i + 1}</span>)}
+          </div>
+
+          {selectedHex ? (
+            <div className="cp-scale-assign">
+              <div className="cp-scale-assign-head">
+                <div className="cp-scale-assign-swatch" style={{ background: selectedHex }} />
+                <span className="cp-scale-assign-hex">{selectedHex}</span>
+                <span className="cp-scale-assign-hint">Assign to role:</span>
+              </div>
+              <div className="cp-scale-assign-roles">
+                {ROLES.map((role) => (
+                  <button
+                    key={role.key}
+                    type="button"
+                    className={`cp-scale-assign-role${values[role.key] === selectedHex ? ' cp-scale-assign-role--active' : ''}`}
+                    onClick={() => { onChange(role.key, selectedHex); setSelectedStep(null) }}
+                  >
+                    {role.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="cp-scale-hint">Click a step to assign it to a role.</p>
+          )}
+        </>
+      ) : (
+        <p className="cp-scale-hint">Enter a valid hex color above to generate a scale.</p>
+      )}
+    </div>
+  )
+}
+
 function BuilderTab({
   values,
   onChange,
@@ -1443,6 +1524,7 @@ function UrlExtractTab({ onUseColors, onApplyColorsOnly, onUseTypography, onSugg
 export default function CreatePage() {
   const [activeTab, setActiveTab] = useState('build')
   const [colorInputMode, setColorInputMode] = useState('manual')
+  const [colorPickerSubTab, setColorPickerSubTab] = useState('custom')
   const [previewPage, setPreviewPage] = useState('components')
   const [rightTab, setRightTab] = useState('preview')
   const [values, setValues] = useState({ ...DEFAULT_COLORS })
@@ -1613,14 +1695,38 @@ export default function CreatePage() {
                   >
                     ↗ Extract from URL
                   </button>
-                  <BuilderTab
-                    values={values}
-                    onChange={handleColorChange}
-                    colorUsagePresetId={colorUsagePresetId}
-                    customColorRatios={customColorRatios}
-                    onColorUsagePresetChange={handleColorUsagePresetChange}
-                    onCustomColorRatioChange={handleCustomColorRatioChange}
-                  />
+                  <div className="cp-color-subtabs">
+                    <button
+                      type="button"
+                      className={`cp-color-subtab${colorPickerSubTab === 'custom' ? ' cp-color-subtab--active' : ''}`}
+                      onClick={() => setColorPickerSubTab('custom')}
+                    >
+                      Custom
+                    </button>
+                    <button
+                      type="button"
+                      className={`cp-color-subtab${colorPickerSubTab === 'scale' ? ' cp-color-subtab--active' : ''}`}
+                      onClick={() => setColorPickerSubTab('scale')}
+                    >
+                      Auto Scale
+                    </button>
+                  </div>
+                  {colorPickerSubTab === 'scale' ? (
+                    <ScalePicker
+                      baseColor={values.primary}
+                      values={values}
+                      onChange={handleColorChange}
+                    />
+                  ) : (
+                    <BuilderTab
+                      values={values}
+                      onChange={handleColorChange}
+                      colorUsagePresetId={colorUsagePresetId}
+                      customColorRatios={customColorRatios}
+                      onColorUsagePresetChange={handleColorUsagePresetChange}
+                      onCustomColorRatioChange={handleCustomColorRatioChange}
+                    />
+                  )}
                 </>
               )
             ) : activeTab === 'typography' ? (
