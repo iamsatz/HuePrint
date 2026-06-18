@@ -60,29 +60,38 @@ function normalizeHexFull(hex) {
   return '#' + h.slice(0, 6).padEnd(6, '0')
 }
 
-// Lightness ramp: step 1 is near-white, step 12 is near-black (OKLCH L, 0-1 scale).
-const LIGHTNESS_RAMP = [0.97, 0.94, 0.90, 0.84, 0.76, 0.67, 0.58, 0.49, 0.40, 0.32, 0.23, 0.15]
+// Light mode: step 1 near-white → step 12 near-black
+const LIGHT_L = [0.97, 0.94, 0.90, 0.84, 0.76, 0.67, 0.58, 0.49, 0.40, 0.32, 0.23, 0.15]
+// Dark mode: step 1 near-black → step 12 near-white (for dark surfaces + readable text)
+const DARK_L  = [0.09, 0.12, 0.16, 0.20, 0.25, 0.31, 0.39, 0.49, 0.60, 0.70, 0.82, 0.93]
 
-// Chroma multipliers: full chroma in the mid-range, tapered near the extremes.
-const CHROMA_RAMP = [0.20, 0.40, 0.62, 0.80, 0.92, 0.98, 0.98, 0.92, 0.88, 0.82, 0.70, 0.50]
+// Accent chroma multipliers: full chroma mid-range, tapered at extremes
+const ACCENT_C = [0.20, 0.40, 0.62, 0.80, 0.92, 0.98, 0.98, 0.92, 0.88, 0.82, 0.70, 0.50]
+// Gray chroma multipliers: very low chroma (slight hue tint only)
+const GRAY_C   = [0.06, 0.06, 0.07, 0.07, 0.07, 0.08, 0.08, 0.08, 0.07, 0.07, 0.06, 0.05]
 
-/**
- * Generate a 12-step OKLCH colour scale from a single base hex.
- * Returns an array of 12 hex strings, index 0 = lightest, index 11 = darkest.
- */
-export function generateScale(hex) {
+function buildScale(hex, lightnessRamp, chromaRamp) {
   const full = normalizeHexFull(hex)
   const [lr, lg, lb] = hexToLinearRgb(full)
   const [x, y, z] = linearRgbToXyz(lr, lg, lb)
   const [, a, b] = xyzToOklab(x, y, z)
   const chroma = Math.sqrt(a * a + b * b)
-  const hue = Math.atan2(b, a) // radians — kept as-is to avoid degree/radian round-trip error
-
-  return LIGHTNESS_RAMP.map((L, i) => {
-    const C = chroma * CHROMA_RAMP[i]
-    const oA = C * Math.cos(hue)
-    const oB = C * Math.sin(hue)
-    const [r2, g2, b2] = oklabToLinearRgb(L, oA, oB)
+  const hue = Math.atan2(b, a)
+  return lightnessRamp.map((L, i) => {
+    const C = chroma * chromaRamp[i]
+    const [r2, g2, b2] = oklabToLinearRgb(L, C * Math.cos(hue), C * Math.sin(hue))
     return linearRgbToHex(r2, g2, b2)
   })
 }
+
+/** Light accent — 12 steps, lightest→darkest, full chroma. */
+export function generateScale(hex) { return buildScale(hex, LIGHT_L, ACCENT_C) }
+
+/** Light gray — 12 steps, lightest→darkest, hue-tinted neutral. */
+export function generateGrayScale(hex) { return buildScale(hex, LIGHT_L, GRAY_C) }
+
+/** Dark accent — 12 steps for dark-mode surfaces, darkest→lightest. */
+export function generateDarkScale(hex) { return buildScale(hex, DARK_L, ACCENT_C) }
+
+/** Dark gray — 12 steps, dark-mode neutral with subtle hue tint. */
+export function generateDarkGrayScale(hex) { return buildScale(hex, DARK_L, GRAY_C) }

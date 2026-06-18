@@ -329,17 +329,11 @@
   gap: 12px;
 }
 
-.cp-scale-input-row {
+/* Top row: hex input + Light/Dark toggle */
+.cp-scale-top-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.cp-scale-input-label {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #374151;
-  flex-shrink: 0;
+  gap: 8px;
 }
 
 .cp-scale-input-wrap {
@@ -347,6 +341,7 @@
   align-items: center;
   gap: 8px;
   flex: 1;
+  min-width: 0;
 }
 
 .cp-scale-input-swatch {
@@ -368,62 +363,149 @@
   color: #111827;
 }
 
-.cp-scale-input:focus {
-  border-color: #8B5CF6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+.cp-scale-input:focus { border-color: #8B5CF6; box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
+.cp-scale-input--error { border-color: #ef4444; }
+
+/* Light / Dark mode toggle */
+.cp-scale-mode-toggle {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
-.cp-scale-input--error {
-  border-color: #ef4444;
+.cp-scale-mode-btn {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s, color 0.12s;
 }
+
+.cp-scale-mode-btn--active {
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* Scale rows container */
+.cp-scale-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.cp-scale-rows--dark {
+  background: #18181b;
+  border-color: #3f3f46;
+}
+
+/* Individual scale row */
+.cp-scale-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cp-scale-row-label {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  padding-left: 1px;
+}
+
+.cp-scale-rows--dark .cp-scale-row-label { color: #71717a; }
 
 .cp-scale-swatches {
   display: flex;
-  gap: 3px;
+  gap: 2px;
 }
 
 .cp-scale-swatch {
   flex: 1;
-  height: 40px;
+  height: 34px;
   border: 2px solid transparent;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.1s, border-color 0.1s;
+  transition: transform 0.1s, border-color 0.1s, box-shadow 0.1s;
 }
 
 .cp-scale-swatch:hover {
   transform: scaleY(1.1);
-  border-color: rgba(0,0,0,0.15);
+  border-color: rgba(0,0,0,0.18);
+  z-index: 1;
 }
+
+.cp-scale-rows--dark .cp-scale-swatch:hover { border-color: rgba(255,255,255,0.25); }
 
 .cp-scale-swatch--selected {
-  border-color: #111827;
-  transform: scaleY(1.12);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  border-color: #111827 !important;
+  transform: scaleY(1.13);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 2;
 }
 
-.cp-scale-labels {
+.cp-scale-rows--dark .cp-scale-swatch--selected { border-color: #ffffff !important; }
+
+/* Background row — wider swatches */
+.cp-scale-row--bg .cp-scale-swatches { gap: 6px; }
+
+.cp-scale-swatch--lg {
+  flex: none;
+  width: 56px;
+  height: 34px;
+}
+
+.cp-scale-step-nums {
   display: flex;
-  gap: 3px;
+  gap: 2px;
 }
 
-.cp-scale-labels span {
+.cp-scale-step-nums span {
   flex: 1;
   text-align: center;
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   color: #9ca3af;
   font-weight: 600;
 }
 
+.cp-scale-rows--dark .cp-scale-step-nums span { color: #52525b; }
+
+.cp-scale-step-nums--bg span {
+  flex: none;
+  width: 56px;
+  font-size: 0.6rem;
+}
+
+/* Assign panel */
 .cp-scale-assign {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px 12px;
-  background: #f9fafb;
+  padding: 9px 11px;
+  background: #ffffff;
   border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 9px;
+  margin-top: 2px;
+}
+
+.cp-scale-rows--dark .cp-scale-assign {
+  background: #27272a;
+  border-color: #3f3f46;
 }
 
 .cp-scale-assign-head {
@@ -447,6 +529,8 @@
   font-weight: 600;
 }
 
+.cp-scale-rows--dark .cp-scale-assign-hex { color: #d4d4d8; }
+
 .cp-scale-assign-hint {
   font-size: 0.75rem;
   color: #9ca3af;
@@ -464,7 +548,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: #6b7280;
-  background: #ffffff;
+  background: #f9fafb;
   border: 1.5px solid #e5e7eb;
   border-radius: 20px;
   cursor: pointer;
@@ -472,10 +556,7 @@
   transition: border-color 0.12s, color 0.12s, background 0.12s;
 }
 
-.cp-scale-assign-role:hover {
-  border-color: #8B5CF6;
-  color: #7c3aed;
-}
+.cp-scale-assign-role:hover { border-color: #8B5CF6; color: #7c3aed; }
 
 .cp-scale-assign-role--active {
   color: #7c3aed;
@@ -488,7 +569,7 @@
   color: #9ca3af;
   margin: 0;
   text-align: center;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .cp-section-divider {

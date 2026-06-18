@@ -14,7 +14,7 @@ import { DEFAULT_PORTFOLIO_SECTIONS } from '../lib/portfolioPreviewOptions'
 import { PREVIEW_SECTION_OPTIONS, getDefaultSections } from '../lib/previewSectionOptions'
 import { getFontRecordByFamily } from '../lib/freeFontCatalog'
 import { searchFontLibrary, PROVIDER_LABELS } from '../lib/fontLibrary'
-import { generateScale } from '../lib/colorScale'
+import { generateScale, generateGrayScale, generateDarkScale, generateDarkGrayScale } from '../lib/colorScale'
 import { deriveInspirationUpdate } from '../lib/inspirationAdapters'
 import {
   getDefaultTypography,
@@ -841,67 +841,122 @@ function ColorUsageSection({ presetId, customRatios, onPresetChange, onCustomRat
 
 function ScalePicker({ baseColor, values, onChange }) {
   const [scaleBase, setScaleBase] = useState(baseColor || '#7c3aed')
-  const [selectedStep, setSelectedStep] = useState(null)
+  const [mode, setMode] = useState('light')
+  const [selected, setSelected] = useState(null) // { scale: 'accent'|'gray'|'bg', step: number }
 
-  const scale = useMemo(() => {
-    if (isValidHex(scaleBase)) return generateScale(scaleBase)
+  const valid = isValidHex(scaleBase)
+
+  const lightAccent = useMemo(() => valid ? generateScale(scaleBase) : null, [scaleBase, valid])
+  const lightGray   = useMemo(() => valid ? generateGrayScale(scaleBase) : null, [scaleBase, valid])
+  const darkAccent  = useMemo(() => valid ? generateDarkScale(scaleBase) : null, [scaleBase, valid])
+  const darkGray    = useMemo(() => valid ? generateDarkGrayScale(scaleBase) : null, [scaleBase, valid])
+
+  const accent = mode === 'light' ? lightAccent : darkAccent
+  const gray   = mode === 'light' ? lightGray   : darkGray
+  // Background: first two gray steps (app bg + subtle bg)
+  const bgSteps = gray ? [gray[0], gray[1]] : null
+
+  function pick(scaleName, step) {
+    setSelected(selected?.scale === scaleName && selected?.step === step ? null : { scale: scaleName, step })
+  }
+
+  function getHex(scaleName, step) {
+    if (scaleName === 'accent') return accent?.[step]
+    if (scaleName === 'gray') return gray?.[step]
+    if (scaleName === 'bg') return bgSteps?.[step]
     return null
-  }, [scaleBase])
+  }
 
-  const selectedHex = selectedStep !== null && scale ? scale[selectedStep] : null
+  const selHex = selected ? getHex(selected.scale, selected.step) : null
+
+  function ScaleRow({ label, scaleName, steps, bgColor }) {
+    return (
+      <div className="cp-scale-row">
+        <span className="cp-scale-row-label">{label}</span>
+        <div className="cp-scale-swatches">
+          {steps.map((hex, i) => {
+            const active = selected?.scale === scaleName && selected?.step === i
+            return (
+              <button
+                key={i}
+                type="button"
+                className={`cp-scale-swatch${active ? ' cp-scale-swatch--selected' : ''}`}
+                style={{ background: hex, ['--bg']: bgColor }}
+                onClick={() => pick(scaleName, i)}
+                title={`${label} step ${i + 1} — ${hex}`}
+              />
+            )
+          })}
+        </div>
+        <div className="cp-scale-step-nums">
+          {steps.map((_, i) => <span key={i}>{i + 1}</span>)}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="cp-scale-picker">
-      <div className="cp-scale-input-row">
-        <label className="cp-scale-input-label">Base color</label>
+      <div className="cp-scale-top-row">
         <div className="cp-scale-input-wrap">
-          {isValidHex(scaleBase) && (
-            <div className="cp-scale-input-swatch" style={{ background: scaleBase }} />
-          )}
+          {valid && <div className="cp-scale-input-swatch" style={{ background: scaleBase }} />}
           <input
             type="text"
-            className={`cp-scale-input ${scaleBase && !isValidHex(scaleBase) ? 'cp-scale-input--error' : ''}`}
+            className={`cp-scale-input${scaleBase && !valid ? ' cp-scale-input--error' : ''}`}
             value={scaleBase}
-            onChange={(e) => { setScaleBase(e.target.value); setSelectedStep(null) }}
+            onChange={(e) => { setScaleBase(e.target.value); setSelected(null) }}
             placeholder="#7c3aed"
             maxLength={9}
             spellCheck={false}
           />
         </div>
+        <div className="cp-scale-mode-toggle">
+          <button type="button" className={`cp-scale-mode-btn${mode === 'light' ? ' cp-scale-mode-btn--active' : ''}`} onClick={() => { setMode('light'); setSelected(null) }}>Light</button>
+          <button type="button" className={`cp-scale-mode-btn${mode === 'dark' ? ' cp-scale-mode-btn--active' : ''}`} onClick={() => { setMode('dark'); setSelected(null) }}>Dark</button>
+        </div>
       </div>
 
-      {scale ? (
-        <>
-          <div className="cp-scale-swatches">
-            {scale.map((hex, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`cp-scale-swatch${selectedStep === i ? ' cp-scale-swatch--selected' : ''}`}
-                style={{ background: hex }}
-                onClick={() => setSelectedStep(selectedStep === i ? null : i)}
-                title={`Step ${i + 1} — ${hex}`}
-              />
-            ))}
-          </div>
-          <div className="cp-scale-labels">
-            {scale.map((_, i) => <span key={i}>{i + 1}</span>)}
+      {accent && gray && bgSteps ? (
+        <div className={`cp-scale-rows${mode === 'dark' ? ' cp-scale-rows--dark' : ''}`}>
+          <ScaleRow label="Accent" scaleName="accent" steps={accent} bgColor={mode === 'dark' ? '#111' : '#fff'} />
+          <ScaleRow label="Gray" scaleName="gray" steps={gray} bgColor={mode === 'dark' ? '#111' : '#fff'} />
+          <div className="cp-scale-row cp-scale-row--bg">
+            <span className="cp-scale-row-label">Background</span>
+            <div className="cp-scale-swatches cp-scale-swatches--bg">
+              {bgSteps.map((hex, i) => {
+                const active = selected?.scale === 'bg' && selected?.step === i
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`cp-scale-swatch cp-scale-swatch--lg${active ? ' cp-scale-swatch--selected' : ''}`}
+                    style={{ background: hex }}
+                    onClick={() => pick('bg', i)}
+                    title={`${i === 0 ? 'App background' : 'Subtle background'} — ${hex}`}
+                  />
+                )
+              })}
+            </div>
+            <div className="cp-scale-step-nums cp-scale-step-nums--bg">
+              <span>App bg</span>
+              <span>Subtle</span>
+            </div>
           </div>
 
-          {selectedHex ? (
+          {selHex ? (
             <div className="cp-scale-assign">
               <div className="cp-scale-assign-head">
-                <div className="cp-scale-assign-swatch" style={{ background: selectedHex }} />
-                <span className="cp-scale-assign-hex">{selectedHex}</span>
-                <span className="cp-scale-assign-hint">Assign to role:</span>
+                <div className="cp-scale-assign-swatch" style={{ background: selHex }} />
+                <span className="cp-scale-assign-hex">{selHex}</span>
+                <span className="cp-scale-assign-hint">Assign to:</span>
               </div>
               <div className="cp-scale-assign-roles">
                 {ROLES.map((role) => (
                   <button
                     key={role.key}
                     type="button"
-                    className={`cp-scale-assign-role${values[role.key] === selectedHex ? ' cp-scale-assign-role--active' : ''}`}
-                    onClick={() => { onChange(role.key, selectedHex); setSelectedStep(null) }}
+                    className={`cp-scale-assign-role${values[role.key] === selHex ? ' cp-scale-assign-role--active' : ''}`}
+                    onClick={() => { onChange(role.key, selHex); setSelected(null) }}
                   >
                     {role.label}
                   </button>
@@ -909,11 +964,11 @@ function ScalePicker({ baseColor, values, onChange }) {
               </div>
             </div>
           ) : (
-            <p className="cp-scale-hint">Click a step to assign it to a role.</p>
+            <p className="cp-scale-hint">Click any step to assign it to a role.</p>
           )}
-        </>
+        </div>
       ) : (
-        <p className="cp-scale-hint">Enter a valid hex color above to generate a scale.</p>
+        <p className="cp-scale-hint">Enter a valid hex to generate scales.</p>
       )}
     </div>
   )
