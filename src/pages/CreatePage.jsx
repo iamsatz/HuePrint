@@ -1268,7 +1268,7 @@ function autoMapColors(colors) {
   return mapping
 }
 
-function UrlExtractTab({ onUseColors, onUseTypography, onSuggestPreview, onGenerateKit, onSwitchToColorPicker }) {
+function UrlExtractTab({ onUseColors, onApplyColorsOnly, onUseTypography, onSuggestPreview, onGenerateKit, onSwitchToColorPicker }) {
   const [urlInput, setUrlInput] = useState('')
   const [status, setStatus] = useState('idle')
   const [extractedColors, setExtractedColors] = useState([])
@@ -1368,7 +1368,13 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSuggestPreview, onGener
   }
 
   function handleUse() {
-    onUseColors(roleMapping)
+    // Use the dedicated "colors only" callback if provided so the extract panel
+    // stays open; otherwise fall back to the full onUseColors which may close it.
+    if (onApplyColorsOnly) {
+      onApplyColorsOnly(roleMapping)
+    } else {
+      onUseColors(roleMapping)
+    }
   }
 
   function handleGenerateKit() {
@@ -1772,7 +1778,20 @@ export default function CreatePage() {
               colorInputMode === 'extract' ? (
                 <UrlExtractTab
                   onUseColors={(data) => { handleImport(data); setColorInputMode('manual') }}
-                  onUseTypography={(fonts) => { setTypography((prev) => normalizeTypography({ ...prev, ...fonts })) }}
+                  onApplyColorsOnly={(data) => { handleImport(data) }}
+                  onUseTypography={(fonts) => {
+                    setTypography((prev) => {
+                      // In modes where displayFont is a distinct role ('three'/'four'),
+                      // it keeps the stale value unless we reset it. If it was tracking
+                      // headingFont (not customized), update it with the new heading.
+                      const displayWasTracking = !prev.displayFont || prev.displayFont === prev.headingFont
+                      return normalizeTypography({
+                        ...prev,
+                        ...(displayWasTracking && fonts.headingFont ? { displayFont: fonts.headingFont } : {}),
+                        ...fonts,
+                      })
+                    })
+                  }}
                   onSuggestPreview={(previewId) => setPreviewPage(previewId)}
                   onGenerateKit={(name) => { setKitName(name); setColorInputMode('manual') }}
                   onSwitchToColorPicker={() => setColorInputMode('manual')}
