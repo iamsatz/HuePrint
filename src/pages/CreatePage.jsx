@@ -1203,6 +1203,37 @@ function ExtractedTokens({ tokens, onUseFonts }) {
   )
 }
 
+const CONFIDENCE_ICON = { high: '●', medium: '◐' }
+
+function DetectedComponents({ components, onSuggestPreview }) {
+  if (!components || components.detected.length === 0) return null
+  const { detected, suggestion } = components
+  return (
+    <div className="cp-extract-section">
+      <div className="cp-extract-section-label">
+        Detected Components <span className="cp-semantic-badge">V4.1</span>
+      </div>
+      <div className="cp-component-chips">
+        {detected.map((c) => (
+          <div key={c.id} className={`cp-component-chip cp-component-chip--${c.confidence}`} title={`${c.confidence} confidence`}>
+            <span className="cp-component-chip-icon">{c.icon}</span>
+            <span className="cp-component-chip-label">{c.label}</span>
+            <span className="cp-component-chip-conf">{CONFIDENCE_ICON[c.confidence]}</span>
+          </div>
+        ))}
+      </div>
+      {suggestion && onSuggestPreview && (
+        <div className="cp-component-suggestion">
+          <span className="cp-component-suggestion-text">Looks like a <strong>{suggestion.label}</strong></span>
+          <button className="cp-component-suggestion-btn" type="button" onClick={() => onSuggestPreview(suggestion.previewId)}>
+            Switch preview →
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function autoMapColors(colors) {
   if (!colors || colors.length === 0) return {}
   const mapping = {}
@@ -1237,12 +1268,13 @@ function autoMapColors(colors) {
   return mapping
 }
 
-function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker }) {
+function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker, onSuggestPreview }) {
   const [urlInput, setUrlInput] = useState('')
   const [status, setStatus] = useState('idle')
   const [extractedColors, setExtractedColors] = useState([])
   const [semantic, setSemantic] = useState({})
   const [extractedTokens, setExtractedTokens] = useState(null)
+  const [extractedComponents, setExtractedComponents] = useState(null)
   const [domain, setDomain] = useState('')
   const [accessMode, setAccessMode] = useState('public')
   const [roleMapping, setRoleMapping] = useState({})
@@ -1267,6 +1299,7 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker }) 
     setExtractedColors([])
     setSemantic({})
     setExtractedTokens(null)
+    setExtractedComponents(null)
     setRoleMapping({})
     setSelectedRole(null)
 
@@ -1290,6 +1323,7 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker }) 
         setExtractedColors(data.colors || [])
         setSemantic(data.semantic || {})
         setExtractedTokens(data.tokens || null)
+        setExtractedComponents(data.components || null)
         setDomain(data.domain || url)
         setAccessMode(data.accessMode || 'public')
         setRoleMapping(autoMapColors(data.colors || []))
@@ -1320,6 +1354,7 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker }) 
     setExtractedColors([])
     setSemantic({})
     setExtractedTokens(null)
+    setExtractedComponents(null)
     setRoleMapping({})
     setSelectedRole(null)
     setAccessMode('public')
@@ -1501,6 +1536,7 @@ function UrlExtractTab({ onUseColors, onUseTypography, onSwitchToColorPicker }) 
             </div>
           )}
 
+          <DetectedComponents components={extractedComponents} onSuggestPreview={onSuggestPreview} />
           <ExtractedTokens tokens={extractedTokens} onUseFonts={onUseTypography} />
 
           <div className="cp-extract-section">
@@ -1701,6 +1737,7 @@ export default function CreatePage() {
                 <UrlExtractTab
                   onUseColors={(data) => { handleImport(data); setColorInputMode('manual') }}
                   onUseTypography={(fonts) => { setTypography((prev) => normalizeTypography({ ...prev, ...fonts })) }}
+                  onSuggestPreview={(previewId) => setPreviewPage(previewId)}
                   onSwitchToColorPicker={() => setColorInputMode('manual')}
                 />
               ) : (
