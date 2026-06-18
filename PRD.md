@@ -440,6 +440,8 @@ Acceptance:
 
 Goal: extract richer design tokens from websites.
 
+Status: Implemented locally. URL extraction now returns static CSS token suggestions for typography, radius, shadows, spacing, and button styles while keeping the existing color response shape.
+
 Requirements:
 
 - Detect fonts, font sizes, border radius, shadows, spacing rhythm, and button styles.
