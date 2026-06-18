@@ -35,8 +35,11 @@ export const TYPOGRAPHY_MODES = [
 export const TYPOGRAPHY_ROLES = [
   { key: 'displayFont', label: 'Display', hint: 'Hero and brand moments', minMode: 3 },
   { key: 'headingFont', label: 'Heading', hint: 'Page and section headings', minMode: 1 },
-  { key: 'bodyFont', label: 'Body', hint: 'Paragraphs, forms, and UI copy', minMode: 2 },
-  { key: 'monoFont', label: 'UI / Mono', hint: 'Code, data, and compact labels', minMode: 4 },
+  { key: 'bodyFont', label: 'Body', hint: 'Paragraphs, forms, and reading copy', minMode: 2 },
+  // Action / UI: buttons, labels, links, nav. minMode 5 keeps it out of the
+  // legacy mode-based UI; the card-based typography tab assigns it directly.
+  { key: 'uiFont', label: 'Action / UI', hint: 'Buttons, labels, links, nav', minMode: 5 },
+  { key: 'monoFont', label: 'Code / Mono', hint: 'Code, data, and compact labels', minMode: 4 },
 ]
 
 export const MONO_FONT_OPTIONS = [
@@ -102,13 +105,14 @@ export function getDefaultTypography() {
     headingFont: pair.heading,
     bodyFont: pair.body,
     monoFont: 'JetBrains Mono',
+    uiFont: pair.body,
     baseFontSize: '16px',
     lineHeight: '1.6',
     roles: {
       hero: 'displayFont',
       headings: 'headingFont',
       body: 'bodyFont',
-      ui: 'bodyFont',
+      ui: 'uiFont',
       code: 'monoFont',
     },
   }
@@ -120,20 +124,26 @@ export function normalizeTypography(input = getDefaultTypography()) {
   let headingFont = input.headingFont || displayFont || 'Inter'
   let bodyFont = input.bodyFont || headingFont || 'Inter'
   let monoFont = input.monoFont || 'JetBrains Mono'
+  // Action/UI font defaults to body when unset, so previews that don't yet
+  // consume --hp-ui-font are visually unchanged.
+  let uiFont = input.uiFont || bodyFont
 
   if (mode === 'single') {
     bodyFont = headingFont
     displayFont = headingFont
     monoFont = headingFont
+    uiFont = headingFont
   }
 
   if (mode === 'two') {
     displayFont = headingFont
     monoFont = 'JetBrains Mono'
+    uiFont = input.uiFont || bodyFont
   }
 
   if (mode === 'three') {
     monoFont = input.monoFont || 'JetBrains Mono'
+    uiFont = input.uiFont || bodyFont
   }
 
   return {
@@ -142,13 +152,14 @@ export function normalizeTypography(input = getDefaultTypography()) {
     headingFont,
     bodyFont,
     monoFont,
+    uiFont,
     baseFontSize: input.baseFontSize || '16px',
     lineHeight: input.lineHeight || '1.6',
     roles: {
       hero: 'displayFont',
       headings: 'headingFont',
       body: 'bodyFont',
-      ui: mode === 'four' ? 'bodyFont' : 'bodyFont',
+      ui: 'uiFont',
       code: 'monoFont',
       ...(input.roles || {}),
     },

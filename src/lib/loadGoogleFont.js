@@ -34,3 +34,34 @@ export function loadFontRecord(font) {
   link.href = font.cssEmbedUrl
   document.head.appendChild(link)
 }
+
+// Fontshare slug: lowercase, non-alphanumerics collapsed to single hyphens.
+export function fontshareSlug(family) {
+  return String(family || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+export function fontshareCssUrl(family) {
+  return `https://api.fontshare.com/v2/css?f[]=${fontshareSlug(family)}@400,500,700&display=swap`
+}
+
+/**
+ * Load a font-library record { family, provider, cssEmbedUrl? } on demand.
+ * Google → Google Fonts CSS2; Fontshare → derived api.fontshare.com URL.
+ * A bad URL simply 404s the stylesheet (browser falls back) — graceful.
+ */
+export function loadLibraryFont(font) {
+  if (!font?.family) return
+  if (font.cssEmbedUrl) {
+    loadFontRecord(font)
+    return
+  }
+  if (font.provider === 'fontshare' || font.provider === 'curated') {
+    loadFontRecord({ family: font.family, cssEmbedUrl: fontshareCssUrl(font.family) })
+    return
+  }
+  loadFont(font.family)
+}

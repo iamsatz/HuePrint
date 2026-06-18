@@ -244,6 +244,7 @@ function applyKitPreviewVars(el, kit) {
     el.style.setProperty('--hp-display-font', `'${typography.displayFont}', sans-serif`)
     el.style.setProperty('--hp-heading-font', `'${typography.headingFont}', sans-serif`)
     el.style.setProperty('--hp-body-font', `'${typography.bodyFont}', sans-serif`)
+    el.style.setProperty('--hp-ui-font', `'${typography.uiFont || typography.bodyFont}', sans-serif`)
     el.style.setProperty('--hp-mono-font', `'${typography.monoFont}', monospace`)
   }
 }
