@@ -1,27 +1,92 @@
-import React from 'react'
+import React, { useState, useMemo } from 'react'
 import { matchWebsiteReferences } from '../../lib/websiteReferences'
 import './SimilarWebsitesPanel.css'
+
+const CAT_STYLE = {
+  SaaS:           { bg: '#eff6ff', color: '#1d4ed8' },
+  Fintech:        { bg: '#ecfdf5', color: '#065f46' },
+  Developer:      { bg: '#f0f9ff', color: '#0369a1' },
+  Productivity:   { bg: '#fffbeb', color: '#92400e' },
+  'Design Tools': { bg: '#fdf4ff', color: '#86198f' },
+  Portfolio:      { bg: '#f5f3ff', color: '#5b21b6' },
+  Ecommerce:      { bg: '#fff1f2', color: '#be123c' },
+  Healthcare:     { bg: '#ecfeff', color: '#155e75' },
+  Education:      { bg: '#f0fdf4', color: '#166534' },
+  Retail:         { bg: '#fff7ed', color: '#9a3412' },
+  Travel:         { bg: '#f0fdfa', color: '#134e4a' },
+  Agency:         { bg: '#fdf4ff', color: '#6b21a8' },
+}
+
+function CategoryPill({ category }) {
+  const s = CAT_STYLE[category] || { bg: '#f3f4f6', color: '#374151' }
+  return (
+    <span className="swp-cat-pill" style={{ background: s.bg, color: s.color }}>
+      {category}
+    </span>
+  )
+}
+
+function ScoreBadge({ score }) {
+  const s = score >= 70
+    ? { bg: '#f5f3ff', color: '#7c3aed' }
+    : score >= 45
+    ? { bg: '#f3f4f6', color: '#374151' }
+    : { bg: '#f9fafb', color: '#9ca3af' }
+  return (
+    <span className="swp-score-badge" style={{ background: s.bg, color: s.color }}>
+      {score}%
+    </span>
+  )
+}
+
+function PaletteHero({ palette, url, name }) {
+  const colors = palette.slice(0, 5)
+  return (
+    <a className="swp-palette-hero" href={url} target="_blank" rel="noreferrer" aria-label={`Visit ${name}`}>
+      {colors.map((hex, i) => (
+        <span key={i} className="swp-palette-block" style={{ background: hex }} />
+      ))}
+    </a>
+  )
+}
 
 function ColorPair({ label, userHex, refHex }) {
   if (!userHex || !refHex) return null
   return (
     <div className="swp-color-pair">
       <span className="swp-color-pair-label">{label}</span>
-      <div className="swp-color-pair-swatches">
-        <span className="swp-swatch" style={{ background: userHex }} title={`Your ${label}: ${userHex}`} />
-        <span className="swp-color-pair-arrow">→</span>
-        <span className="swp-swatch" style={{ background: refHex }} title={`Their closest: ${refHex}`} />
+      <div className="swp-color-pair-right">
+        <div className="swp-swatch-group">
+          <span className="swp-swatch" style={{ background: userHex }} title={userHex} />
+          <code className="swp-hex">{userHex.toUpperCase()}</code>
+        </div>
+        <span className="swp-pair-arrow">→</span>
+        <div className="swp-swatch-group">
+          <span className="swp-swatch" style={{ background: refHex }} title={refHex} />
+          <code className="swp-hex">{refHex.toUpperCase()}</code>
+        </div>
       </div>
     </div>
   )
 }
 
-function ScoreRing({ score }) {
-  const color = score >= 70 ? '#7c3aed' : score >= 45 ? '#6b7280' : '#d1d5db'
+function FilterBar({ categories, active, onChange, counts }) {
   return (
-    <span className="swp-score" style={{ color, borderColor: color }}>
-      {score}%
-    </span>
+    <div className="swp-filter-bar" role="group" aria-label="Filter by category">
+      {['All', ...categories].map((cat) => (
+        <button
+          key={cat}
+          type="button"
+          className={`swp-filter-btn${active === cat ? ' swp-filter-btn--active' : ''}`}
+          onClick={() => onChange(cat)}
+        >
+          {cat}
+          {counts[cat] != null && (
+            <span className="swp-filter-count">{counts[cat]}</span>
+          )}
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -35,9 +100,31 @@ export default function SimilarWebsitesPanel({
   onUseReference,
   actionLabel = 'Apply to kit',
 }) {
+  const [filterCat, setFilterCat] = useState('All')
+
   if (!kit) return null
 
-  const matches = matchWebsiteReferences(kit, category, limit)
+  const allMatches = useMemo(
+    () => matchWebsiteReferences(kit, 'All', 999),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(kit)],
+  )
+
+  const counts = useMemo(() => {
+    const c = { All: allMatches.length }
+    allMatches.forEach((m) => { c[m.category] = (c[m.category] || 0) + 1 })
+    return c
+  }, [allMatches])
+
+  const categories = useMemo(
+    () => [...new Set(allMatches.map((m) => m.category))].sort(),
+    [allMatches],
+  )
+
+  const matches = useMemo(
+    () => filterCat === 'All' ? allMatches.slice(0, limit) : allMatches.filter((m) => m.category === filterCat),
+    [allMatches, filterCat, limit],
+  )
 
   return (
     <section className={`swp swp--${variant}`} aria-label={title}>
@@ -45,50 +132,44 @@ export default function SimilarWebsitesPanel({
         <span className="swp-kicker">Palette match</span>
         <h2>{title}</h2>
         <p>{description}</p>
-        <span className="swp-count">{matches.length} sites</span>
       </div>
+
+      <FilterBar categories={categories} active={filterCat} onChange={setFilterCat} counts={counts} />
+
+      <span className="swp-count">{matches.length} sites</span>
 
       <div className="swp-grid">
         {matches.map((ref) => {
           const md = ref.matchDetails || {}
           return (
             <article key={ref.id} className="swp-card">
-              <a
-                className="swp-shot"
-                href={ref.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`Open ${ref.name}`}
-              >
-                <img src={ref.screenshot} alt={`${ref.name} screenshot`} loading="lazy" />
-              </a>
+              <PaletteHero palette={ref.palette} url={ref.url} name={ref.name} />
 
               <div className="swp-body">
                 <div className="swp-title-row">
-                  <div className="swp-title-info">
-                    <h3>{ref.name}</h3>
-                    <span className="swp-category">{ref.category}</span>
-                  </div>
-                  <ScoreRing score={ref.score} />
+                  <h3 className="swp-site-name">{ref.name}</h3>
+                  <ScoreBadge score={ref.score} />
+                </div>
+
+                <div className="swp-tags">
+                  <CategoryPill category={ref.category} />
+                  {ref.styleTags?.slice(0, 2).map((tag) => (
+                    <span key={tag} className="swp-style-tag">{tag}</span>
+                  ))}
                 </div>
 
                 <div className="swp-section">
-                  <span className="swp-section-label">Color match</span>
+                  <span className="swp-section-label">Colors</span>
                   <div className="swp-color-pairs">
                     <ColorPair label="Primary" userHex={md.userPrimary} refHex={md.primaryMatchHex} />
                     <ColorPair label="Background" userHex={md.userBg} refHex={md.bgMatchHex} />
-                  </div>
-                  <div className="swp-ref-palette">
-                    {ref.palette.map((hex) => (
-                      <span key={hex} className="swp-swatch swp-swatch--sm" style={{ background: hex }} title={hex} />
-                    ))}
                   </div>
                 </div>
 
                 {md.refFonts?.heading && (
                   <div className="swp-section">
                     <span className="swp-section-label">Typography</span>
-                    <div className="swp-font-info">
+                    <div className="swp-font-row">
                       <span
                         className="swp-font-name"
                         style={{ fontFamily: `'${md.refFonts.heading}', sans-serif` }}
@@ -96,10 +177,12 @@ export default function SimilarWebsitesPanel({
                         {md.refFonts.heading}
                       </span>
                       {md.refFonts.classification && (
-                        <span className="swp-font-class">{md.refFonts.classification.replace(/-/g, ' ')}</span>
+                        <span className="swp-font-class">
+                          {md.refFonts.classification.replace(/-/g, ' ')}
+                        </span>
                       )}
                       {md.headingFont && md.headingFont === md.refFonts.heading && (
-                        <span className="swp-font-match">same as yours</span>
+                        <span className="swp-font-match">✓ same as yours</span>
                       )}
                     </div>
                   </div>
@@ -107,7 +190,7 @@ export default function SimilarWebsitesPanel({
 
                 {ref.reasons.length > 0 && (
                   <ul className="swp-reasons">
-                    {ref.reasons.map((r) => (
+                    {ref.reasons.slice(0, 3).map((r) => (
                       <li key={r}>{r}</li>
                     ))}
                   </ul>
@@ -119,7 +202,7 @@ export default function SimilarWebsitesPanel({
                     type="button"
                     onClick={() => onUseReference(ref)}
                   >
-                    {actionLabel}
+                    {actionLabel} →
                   </button>
                 )}
               </div>
